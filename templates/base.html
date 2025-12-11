@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="uz">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>{% block title %}MyClinic{% endblock %}</title>
+		<link
+			href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+			rel="stylesheet"
+		/>
+
+		<link
+			rel="stylesheet"
+			href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+		/>
+		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+	</head>
+	<body class="d-flex flex-column min-vh-100">
+		<nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
+			<div class="container">
+				<a class="navbar-brand fw-bold" href="{% url 'home' %}">🏥 MyClinic</a>
+				<button
+					class="navbar-toggler"
+					type="button"
+					data-bs-toggle="collapse"
+					data-bs-target="#navbarNav"
+				>
+					<span class="navbar-toggler-icon"></span>
+				</button>
+				<div class="collapse navbar-collapse" id="navbarNav">
+					<ul class="navbar-nav ms-auto">
+						<li class="nav-item">
+							<a class="nav-link" href="{% url 'home' %}">Bosh sahifa</a>
+						</li>
+
+						{% if user.is_authenticated %}
+						<li class="nav-item">
+							<a
+								class="nav-link text-warning fw-bold"
+								href="{% url 'dashboard' %}"
+							>
+								👤 Kabinetim ({{ user.username }})
+							</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link text-danger" href="{% url 'sign_out' %}"
+								>Chiqish</a
+							>
+						</li>
+
+						{% else %}
+						<li class="nav-item">
+							<a class="nav-link" href="{% url 'sign_in' %}">Kirish</a>
+						</li>
+						<li class="nav-item">
+							<a class="btn btn-outline-light ms-2" href="{% url 'sign_up' %}"
+								>Ro'yxatdan o'tish</a
+							>
+						</li>
+						{% endif %}
+					</ul>
+				</div>
+			</div>
+		</nav>
+
+		<main class="flex-grow-1">
+			<div class="container mt-3">
+				{% if messages %} {% for message in messages %}
+				<div
+					class="alert alert-{{ message.tags }} alert-dismissible fade show"
+					role="alert"
+				>
+					{{ message }}
+					<button
+						type="button"
+						class="btn-close"
+						data-bs-dismiss="alert"
+						aria-label="Close"
+					></button>
+				</div>
+				{% endfor %} {% endif %}
+			</div>
+
+			{% block content %} {% endblock %}
+		</main>
+
+		<footer class="bg-dark text-white text-center py-3 mt-5">
+			<div class="container">
+				<p class="mb-0">&copy; 2024 MyClinic. Barcha huquqlar himoyalangan.</p>
+			</div>
+		</footer>
+		{% if messages %}
+<div aria-live="polite" aria-atomic="true" class="position-relative">
+	<div class="toast-container position-fixed bottom-0 end-0 p-3">
+		{% for message in messages %}
+		<div
+			class="toast align-items-center text-bg-success border-0 shadow"
+			role="alert"
+			aria-live="assertive"
+			aria-atomic="true"
+		>
+			<div class="d-flex">
+				<div class="toast-body">
+					{{ message }}
+				</div>
+				<button
+					type="button"
+					class="btn-close btn-close-white me-2 m-auto"
+					data-bs-dismiss="toast"
+					aria-label="Close"
+				></button>
+			</div>
+		</div>
+		{% endfor %}
+	</div>
+</div>
+{% endif %}
+
+<script>
+	document.addEventListener("DOMContentLoaded", function () {
+		document.querySelectorAll(".toast").forEach(function (toastEl) {
+			new bootstrap.Toast(toastEl, { delay: 3000 }).show();
+		});
+	});
+</script>
+
+
+		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+	</body>
+</html>

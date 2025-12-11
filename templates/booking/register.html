@@ -1,0 +1,101 @@
+{% extends 'base.html' %}
+
+{% block title %}Ro'yxatdan o'tish{% endblock %}
+
+{% block content %}
+<div class="d-flex align-items-center justify-content-center min-vh-100" style="background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);">
+    
+    <div class="card shadow-lg border-0 rounded-4 my-5" style="max-width: 500px; width: 100%;">
+        <div class="card-body p-5">
+            
+            <div class="text-center mb-4">
+                <div class="bg-success text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px; font-size: 30px;">
+                    👤
+                </div>
+                <h3 class="fw-bold text-success">Yangi hisob</h3>
+                <p class="text-muted small">Qisqa vaqt ichida ro'yxatdan o'ting</p>
+            </div>
+
+            <form method="post">
+                {% csrf_token %}
+                
+                {% if form.errors %}
+                    <div class="alert alert-danger py-2 small mb-3 text-center">
+                        Ma'lumotlarni to'g'ri kiriting!
+                    </div>
+                {% endif %}
+
+                <div class="custom-form-style">
+                    {{ form.as_p }}
+                </div>
+
+                <div class="d-grid mt-4">
+                    <button type="submit" class="btn btn-success btn-lg rounded-pill fw-bold shadow-sm">
+                        Ro'yxatdan o'tish
+                    </button>
+                </div>
+            </form>
+
+            <div class="text-center mt-4">
+                <p class="text-muted small mb-0">Allaqachon hisobingiz bormi?</p>
+                <a href="{% url 'sign_in' %}" class="text-success fw-bold text-decoration-none">Kirish</a>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<style>
+    /* 1. Inputlar dizayni */
+    .custom-form-style input {
+        width: 100%;
+        padding: 12px 15px;
+        margin-bottom: 5px;
+        border: 1px solid #dee2e6;
+        border-radius: 10px;
+        background-color: #f8f9fa;
+        transition: all 0.3s ease;
+    }
+
+    .custom-form-style input:focus {
+        border-color: #198754;
+        background-color: #fff;
+        outline: none;
+        box-shadow: 0 0 0 4px rgba(25, 135, 84, 0.1);
+    }
+
+    /* 2. Label (Sarlavha) */
+    .custom-form-style label {
+        font-weight: 600;
+        color: #495057;
+        margin-top: 15px;
+        margin-bottom: 5px;
+        display: block;
+    }
+
+    /* --- ENG MUHIM QISM: ORTIQCHA YOZUVLARNI YASHIRISH --- */
+    
+    /* Input tagidagi mayda yozuvlarni (helptext) yashiramiz */
+    .custom-form-style .helptext {
+        display: none !important;
+    }
+    
+    /* Parol qoidalari ro'yxatini (ul) yashiramiz */
+    .custom-form-style ul {
+        display: none !important;
+    }
+    
+    /* LEKIN xatoliklar (errorlist) ko'rinishi kerak, shuning uchun uni qayta yoqamiz */
+    .custom-form-style ul.errorlist {
+        display: block !important;
+        padding-left: 0;
+        margin-bottom: 10px;
+        list-style: none;
+    }
+    .custom-form-style ul.errorlist li {
+        color: #dc3545; /* Qizil rang */
+        font-size: 13px;
+        font-weight: bold;
+    }
+</style>
+{% endblock %}

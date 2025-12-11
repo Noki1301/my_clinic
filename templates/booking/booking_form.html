@@ -1,0 +1,47 @@
+{% extends 'base.html' %} 
+{% block title %}Qabulga yozilish{% endblock %} {% block content %}
+<div class="container py-5">
+	<div class="row justify-content-center">
+		<div class="col-md-6">
+			<div class="card shadow">
+				<div class="card-header bg-primary text-white">
+					<h4 class="mb-0">Qabulga yozilish</h4>
+				</div>
+				<div class="card-body">
+					<p class="lead">
+						Shifokor:
+						<strong>{{ doctor.first_name }} {{ doctor.last_name }}</strong>
+					</p>
+					<p class="text-muted">Narxi: {{ doctor.price }} so'm</p>
+					<hr />
+
+					<form method="post">
+						{% csrf_token %}
+
+						<div class="mb-3">
+							<label>Sana:</label>
+							{{ form.date }}
+						</div>
+
+						<div class="mb-3">
+							<label>Vaqt:</label>
+							{{ form.time }}
+							<small class="text-muted"
+								>Ish vaqti: {{ doctor.work_start_time }} - {{doctor.work_end_time }}</small>
+						</div>
+
+						<div class="mb-3">
+							<label>Izoh:</label>
+							{{ form.note }}
+						</div>
+
+						<button type="submit" class="btn btn-success w-100">
+							Tasdiqlash
+						</button>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+{% endblock %}

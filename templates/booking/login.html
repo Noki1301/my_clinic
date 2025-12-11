@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+
+{% block title %}Tizimga kirish{% endblock %}
+
+{% block content %}
+<div class="d-flex align-items-center justify-content-center min-vh-100" style="background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);">
+    
+    <div class="card shadow-lg border-0 rounded-4" style="max-width: 400px; width: 100%;">
+        <div class="card-body p-5">
+            
+            <div class="text-center mb-4">
+                <div class="bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px; font-size: 30px;">
+                    🏥
+                </div>
+                <h3 class="fw-bold text-dark">Xush kelibsiz!</h3>
+                <p class="text-muted small">Davom etish uchun tizimga kiring</p>
+            </div>
+
+            <form method="post">
+                {% csrf_token %}
+                
+                {% if form.errors %}
+                    <div class="alert alert-danger py-2 text-center small mb-3">
+                        Login yoki parol noto'g'ri!
+                    </div>
+                {% endif %}
+
+                <div class="custom-form-style">
+                    {{ form.as_p }}
+                </div>
+
+                <div class="d-grid mt-4">
+                    <button type="submit" class="btn btn-primary btn-lg rounded-pill fw-bold shadow-sm">
+                        Kirish
+                    </button>
+                </div>
+            </form>
+
+            <div class="text-center mt-4">
+                <p class="text-muted small mb-0">Hali a'zo emasmisiz?</p>
+                <a href="{% url 'sign_up' %}" class="text-primary fw-bold text-decoration-none">Ro'yxatdan o'tish</a>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<style>
+    /* Inputlar (Username, Password) uchun dizayn */
+    .custom-form-style input[type="text"],
+    .custom-form-style input[type="password"] {
+        width: 100%;
+        padding: 12px 15px;
+        margin-bottom: 5px;
+        border: 1px solid #dee2e6;
+        border-radius: 10px;
+        background-color: #f8f9fa;
+        transition: all 0.3s ease;
+    }
+
+    /* Inputga bosganda (Focus) */
+    .custom-form-style input:focus {
+        border-color: #0d6efd;
+        background-color: #fff;
+        outline: none;
+        box-shadow: 0 0 0 4px rgba(13, 110, 253, 0.1);
+    }
+
+    /* Label (Yozuvlar) uchun dizayn */
+    .custom-form-style label {
+        font-weight: 500;
+        color: #495057;
+        margin-bottom: 5px;
+        margin-top: 10px;
+        display: block;
+    }
+    
+    /* Yordamchi matnlar (help text) ni yashirish yoki kichraytirish */
+    .helptext {
+        font-size: 11px;
+        color: #adb5bd;
+        display: block;
+        margin-bottom: 10px;
+    }
+</style>
+{% endblock %}

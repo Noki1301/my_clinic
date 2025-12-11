@@ -1,0 +1,66 @@
+{% extends 'base.html' %} {% block title %}Bosh Sahifa - MyClinic{% endblock %}
+{% block content %}
+<div class="container py-5">
+	<div class="text-center mb-5">
+		<h1 class="display-4 fw-bold">Bizning Malakali Shifokorlar</h1>
+		<p class="lead text-muted">
+			Sog'lig'ingizni ishonchli qo'llarga topshiring
+		</p>
+	</div>
+
+	<div class="row">
+		{% for doctor in doctors %}
+		<div class="col-md-4 mb-4">
+			<div class="card shadow-sm h-100 border-0">
+				<div style="height: 250px; overflow: hidden">
+					{% if doctor.image %}
+					<img
+						src="{{ doctor.image.url }}"
+						class="w-100 h-100"
+						style="object-fit: cover"
+						alt="{{ doctor.first_name }}"
+					/>
+					{% else %}
+					<div
+						class="bg-secondary text-white w-100 h-100 d-flex align-items-center justify-content-center"
+					>
+						<span class="fs-1">👨‍⚕️</span>
+					</div>
+					{% endif %}
+				</div>
+
+				<div class="card-body">
+					<h5 class="card-title fw-bold">
+						{{ doctor.first_name }} {{ doctor.last_name }}
+					</h5>
+					<span class="badge bg-info text-dark mb-2"
+						>{{ doctor.get_speciality_display }}</span
+					>
+					<p class="card-text text-muted small">
+						{{ doctor.bio|truncatewords:15 }}
+					</p>
+
+					<div class="d-flex justify-content-between align-items-center mt-3">
+						<span class="fs-5 fw-bold text-primary"
+							>{{ doctor.price }} so'm</span
+						>
+						<a href="{% url 'doctor_detail' doctor.id %}" class="btn btn-outline-primary btn-sm">Batafsil</a>
+					</div>
+				</div>
+				<div class="card-footer bg-transparent border-top-0">
+					<a
+						href="{% url 'book_appointment' doctor.id %}"
+						class="btn btn-primary w-100"
+						>📅 Qabulga yozilish</a
+					>
+				</div>
+			</div>
+		</div>
+		{% empty %}
+		<div class="col-12 text-center">
+			<p class="alert alert-warning">Hozircha shifokorlar ro'yxati bo'sh.</p>
+		</div>
+		{% endfor %}
+	</div>
+</div>
+{% endblock %}
