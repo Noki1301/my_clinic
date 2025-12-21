@@ -7,7 +7,73 @@
 			Sog'lig'ingizni ishonchli qo'llarga topshiring
 		</p>
 	</div>
+	<div
+		class="card shadow-sm mb-5 border-0 rounded-4"
+		style="background: #f8f9fa"
+	>
+		<div class="card-body p-4">
+			<form method="get" action="{% url 'home' %}">
+				<div class="input-group input-group-lg">
+					<span class="input-group-text bg-white border-0 text-primary">
+						<i class="bi bi-search"></i>
+					</span>
 
+					<input
+						type="text"
+						name="q"
+						class="form-control border-0 bg-white"
+						placeholder="Shifokor ismi yoki mutaxassisligi (masalan: Xirurg)..."
+						value="{{ search_query|default:'' }}"
+						aria-label="Search"
+					/>
+
+					<button class="btn btn-primary px-4 rounded-end" type="submit">
+						Qidirish
+					</button>
+				</div>
+			</form>
+
+			<div class="mt-4 d-flex flex-wrap gap-2 justify-content-center">
+				<a
+					href="{% url 'home' %}"
+					class="btn btn-outline-secondary rounded-pill btn-sm"
+					>Barchasi</a
+				>
+				<a
+					href="?spec=Stomatolog"
+					class="btn btn-outline-primary rounded-pill btn-sm"
+					>🦷 Stomatolog</a
+				>
+				<a
+					href="?spec=Kardiolog"
+					class="btn btn-outline-danger rounded-pill btn-sm"
+					>❤️ Kardiolog</a
+				>
+				<a
+					href="?spec=Xirurg"
+					class="btn btn-outline-success rounded-pill btn-sm"
+					>🔪 Xirurg</a
+				>
+				<a
+					href="?spec=Dermatolog"
+					class="btn btn-outline-warning rounded-pill btn-sm"
+					>🧴 Dermatolog</a
+				>
+				<a href="?spec=Pediatr" class="btn btn-outline-info rounded-pill btn-sm"
+					>👶 Pediatr</a
+				>
+				<a
+					href="?spec=Terapevt"
+					class="btn btn-outline-secondary rounded-pill btn-sm"
+					>🩺 Terapevt</a
+				>
+			</div>
+		</div>
+	</div>
+
+	<p class="text-muted mb-4">
+		Topildi: <strong>{{ count }}</strong> ta shifokor
+	</p>
 	<div class="row">
 		{% for doctor in doctors %}
 		<div class="col-md-4 mb-4">
@@ -44,7 +110,11 @@
 						<span class="fs-5 fw-bold text-primary"
 							>{{ doctor.price }} so'm</span
 						>
-						<a href="{% url 'doctor_detail' doctor.id %}" class="btn btn-outline-primary btn-sm">Batafsil</a>
+						<a
+							href="{% url 'doctor_detail' doctor.id %}"
+							class="btn btn-outline-primary btn-sm"
+							>Batafsil</a
+						>
 					</div>
 				</div>
 				<div class="card-footer bg-transparent border-top-0">

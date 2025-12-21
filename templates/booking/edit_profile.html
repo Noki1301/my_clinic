@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+
+{% block title %}Profilni tahrirlash{% endblock %}
+
+{% block content %}
+<div class="container py-5 d-flex justify-content-center">
+    <div class="card shadow border-0 rounded-4" style="max-width: 800px; width: 100%;">
+        <div class="card-header bg-white p-4 border-0">
+            <h3 class="fw-bold text-primary mb-0">⚙️ Sozlamalar</h3>
+        </div>
+        
+        <div class="card-body p-5 pt-0">
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                
+                <h5 class="text-muted border-bottom pb-2 mb-4">Shaxsiy ma'lumotlar</h5>
+                
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold">Ism</label>
+                        {{ u_form.first_name }}
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold">Familiya</label>
+                        {{ u_form.last_name }}
+                    </div>
+                </div>
+                <div class="mb-4">
+                    <label class="form-label fw-bold">Email manzili</label>
+                    {{ u_form.email }}
+                </div>
+
+                {% if is_doctor %}
+                    <h5 class="text-muted border-bottom pb-2 mb-4 mt-5">Shifokor ma'lumotlari</h5>
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Mutaxassislik</label>
+                            {{ d_form.speciality }}
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Narx (so'mda)</label>
+                            {{ d_form.price }}
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Ish boshlanishi</label>
+                            {{ d_form.work_start_time }}
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Ish tugashi</label>
+                            {{ d_form.work_end_time }}
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Telefon</label>
+                        {{ d_form.telephone }}
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Bio (Ma'lumot)</label>
+                        {{ d_form.bio }}
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label fw-bold">Rasm yuklash</label>
+                        {{ d_form.image }}
+                    </div>
+                {% endif %}
+
+                <div class="d-flex justify-content-end mt-4">
+                    <a href="{% url 'dashboard' %}" class="btn btn-light me-2">Bekor qilish</a>
+                    <button type="submit" class="btn btn-primary px-4 rounded-pill">Saqlash ✅</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

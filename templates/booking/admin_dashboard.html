@@ -1,0 +1,129 @@
+{% extends 'base.html' %}
+
+{% block title %}Boshqaruv Paneli{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold text-primary">🛠 Boshqaruv Markazi</h2>
+        <span class="badge bg-dark p-2">Admin: {{ user.username }}</span>
+    </div>
+
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <div class="card text-white bg-primary shadow border-0 rounded-4">
+                <div class="card-body p-4">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="text-uppercase mb-1 opacity-75">Jami Shifokorlar</h6>
+                            <h2 class="display-4 fw-bold mb-0">{{ total_doctors }}</h2>
+                        </div>
+                        <i class="bi bi-heart-pulse-fill fs-1 opacity-50"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card text-white bg-success shadow border-0 rounded-4">
+                <div class="card-body p-4">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="text-uppercase mb-1 opacity-75">Jami Bemorlar</h6>
+                            <h2 class="display-4 fw-bold mb-0">{{ total_patients }}</h2>
+                        </div>
+                        <i class="bi bi-people-fill fs-1 opacity-50"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card text-white bg-warning shadow border-0 rounded-4">
+                <div class="card-body p-4">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="text-uppercase mb-1 opacity-75">Jami Qabullar</h6>
+                            <h2 class="display-4 fw-bold mb-0">{{ total_appointments }}</h2>
+                        </div>
+                        <i class="bi bi-calendar-check-fill fs-1 opacity-50"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-8 mb-4">
+            <div class="card shadow border-0 rounded-4">
+                <div class="card-header bg-white py-3 border-0">
+                    <h5 class="mb-0 fw-bold">📅 Oxirgi qabullar</h5>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Bemor</th>
+                                <th>Shifokor</th>
+                                <th>Sana</th>
+                                <th>Status</th>
+                                <th>Amal</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for app in appointments %}
+                            <tr>
+                                <td class="fw-bold">{{ app.patient.username }}</td>
+                                <td>{{ app.doctor.last_name }}</td>
+                                <td>{{ app.date }} | {{ app.time }}</td>
+                                <td>
+                                    {% if app.status == 'confirmed' %} <span class="badge bg-success">Tasdiq</span>
+                                    {% elif app.status == 'pending' %} <span class="badge bg-warning text-dark">Kutish</span>
+                                    {% elif app.status == 'completed' %} <span class="badge bg-primary">Yakun</span>
+                                    {% else %} <span class="badge bg-danger">Bekor</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <form action="{% url 'delete_appointment' app.id %}" method="post" onsubmit="return confirm('O\'chirasizmi?');" style="display:inline;">
+                                        {% csrf_token %}
+                                        <button class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></button>
+                                    </form>
+                                </td>
+                            </tr>
+                            {% empty %}
+                                <tr><td colspan="5" class="text-center py-3">Qabullar yo'q</td></tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="card shadow border-0 rounded-4">
+                <div class="card-header bg-white py-3 border-0 d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0 fw-bold">👨‍⚕️ Shifokorlar</h5>
+                    <button class="btn btn-sm btn-primary rounded-pill">+ Yangi</button>
+                </div>
+                <div class="card-body p-0">
+                    <ul class="list-group list-group-flush">
+                        {% for doctor in doctors %}
+                        <li class="list-group-item d-flex align-items-center py-3">
+                            <div class="bg-light rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 40px; height: 40px;">
+                                🩺
+                            </div>
+                            <div>
+                                <h6 class="mb-0 fw-bold">{{ doctor.first_name }} {{ doctor.last_name }}</h6>
+                                <small class="text-muted">{{ doctor.get_speciality_display }}</small>
+                            </div>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

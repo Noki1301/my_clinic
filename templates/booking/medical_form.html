@@ -1,0 +1,43 @@
+{% extends 'base.html' %} {% block title %}Tashxis qo'yish{% endblock %} 
+{% block content %}
+<div class="container py-5 d-flex justify-content-center">
+	<div
+		class="card shadow-lg border-0 rounded-4"
+		style="max-width: 700px; width: 100%"
+	>
+		<div class="card-header bg-primary text-white p-4 rounded-top-4">
+			<h4 class="mb-0">📋 Tashxis va Retsept yozish</h4>
+			<p class="mb-0 small opacity-75">
+				Bemor: {{ appointment.patient.first_name }} {{ appointment.patient.last_name }}
+			</p>
+		</div>
+		<div class="card-body p-5">
+			<form method="post">
+				{% csrf_token %}
+
+				<div class="mb-4">
+					<label class="fw-bold text-dark mb-2">Kasallik Tashxisi:</label>
+					{{ form.diagnosis }}
+				</div>
+
+				<div class="mb-4">
+					<label class="fw-bold text-dark mb-2">Retsept va Tavsiyalar:</label>
+					{{ form.prescription }}
+				</div>
+
+				<div class="d-flex justify-content-between mt-5">
+					<a href="{% url 'dashboard' %}" class="btn btn-light text-muted"
+						>Bekor qilish</a
+					>
+					<button
+						type="submit"
+						class="btn btn-primary btn-lg px-5 rounded-pill"
+					>
+						💾 Saqlash va Yakunlash
+					</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+{% endblock %}

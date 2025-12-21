@@ -1,27 +1,57 @@
-{% extends 'base.html' %} {% block title %}Shifokor haqida{% endblock %} 
+{% extends 'base.html' %}
+
+{% block title %}{{ doctor.first_name }} {{ doctor.last_name }}{% endblock %}
+
 {% block content %}
 <div class="container py-5">
-	<div class="row">
-		<div class="col-md-4">
-			<img
-				src="{{ doctor.image.url }}"
-				alt="{{ doctor.first_name }}"
-				class="img-fluid rounded-circle shadow-sm"
-			/>
-		</div>
-		<div class="col-md-8">
-			<h2>{{ doctor.first_name }}</h2>
-			<p class="text-muted">{{ doctor.specialization }}</p>
-			<p>{{ doctor.bio }}</p>
-			<p>
-				<strong>Ish vaqti:</strong> {{ doctor.work_start_time }} - {{ doctor.work_end_time }}
-			</p>
-			<p><strong>Telefon:</strong> {{ doctor.telephone }}</p>
-			<p><strong>Email:</strong> {{ doctor.email }}</p>
-			<a href="{% url 'book_appointment' doctor.id %}" class="btn btn-primary"
-				>Qabulga yozilish</a
-			>
-		</div>
-	</div>
+    
+    <a href="{% url 'home' %}" class="btn btn-outline-secondary mb-4">
+        &larr; Bosh sahifaga qaytish
+    </a>
+
+    <div class="card shadow-lg border-0 rounded-4 overflow-hidden">
+        <div class="row g-0">
+            
+            <div class="col-md-5 bg-light d-flex align-items-center justify-content-center">
+                {% if doctor.image %}
+                    <img src="{{ doctor.image.url }}" class="img-fluid w-100 h-100" style="object-fit: cover; min-height: 400px;" alt="{{ doctor.first_name }}">
+                {% else %}
+                    <div class="py-5 text-center text-muted">Rasm yo'q</div>
+                {% endif %}
+            </div>
+
+            <div class="col-md-7">
+                <div class="card-body p-5">
+                    <span class="badge bg-primary mb-2">{{ doctor.get_speciality_display }}</span>
+                    <h1 class="card-title fw-bold mb-3">Dr. {{ doctor.first_name }} {{ doctor.last_name }}</h1>
+                    
+                    <h4 class="text-success fw-bold mb-4">{{ doctor.price }} so'm <small class="text-muted fs-6">/ qabul</small></h4>
+
+                    <h5 class="fw-bold">👨‍⚕️ Shifokor haqida:</h5>
+                    <p class="card-text text-muted mb-4" style="line-height: 1.8;">
+                        {{ doctor.bio }}
+                    </p>
+
+                    <div class="d-flex align-items-center mb-4 p-3 bg-light rounded-3">
+                        <div class="me-4">
+                            <small class="text-muted d-block">Ish vaqti:</small>
+                            <strong>🕒 {{ doctor.work_start_time }} - {{ doctor.work_end_time }}</strong>
+                        </div>
+                        <div>
+                            <small class="text-muted d-block">Telefon:</small>
+                            <strong>📞 {{ doctor.telephone|default:"Kiritilmagan" }}</strong>
+                        </div>
+                    </div>
+
+                    <div class="d-grid">
+                        <a href="{% url 'book_appointment' doctor.id %}" class="btn btn-primary btn-lg rounded-pill">
+                            📅 Qabulga yozilish
+                        </a>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 {% endblock %}

@@ -1,0 +1,95 @@
+{% extends 'base.html' %} {% block title %}Shifokor Kabineti{% endblock %} 
+{% block content %}
+<div class="container py-5">
+	<div class="alert alert-info">
+		<h4>Xush kelibsiz, Dr. {{ user.doctor.last_name }}! 👨‍⚕️</h4>
+		<p>Sizga yozilgan bemorlar ro'yxati:</p>
+	</div>
+
+	<div class="card shadow-sm">
+		<div class="card-body">
+			{% if appointments %}
+			<div class="table-responsive">
+				<table class="table table-hover">
+					<thead class="table-dark">
+						<tr>
+							<th>Sana</th>
+							<th>Vaqt</th>
+							<th>Bemor Ismi</th>
+							<th>Shikoyati</th>
+							<th>Status</th>
+							<th>Boshqarish</th>
+						</tr>
+					</thead>
+					<tbody>
+						{% for app in appointments %}
+						<tr>
+							<td>{{ app.date }}</td>
+							<td>{{ app.time }}</td>
+							<td class="fw-bold">{{ app.patient.username }}</td>
+							<td>{{ app.note|default:"-" }}</td>
+							<td>
+								{% if app.status == 'pending' %}
+								<span class="badge bg-warning text-dark">Kutilmoqda</span>
+								{% elif app.status == 'confirmed' %}
+								<span class="badge bg-primary">Tasdiqlandi</span>
+								{% elif app.status == 'completed' %}
+								<span class="badge bg-success">Yakunlandi</span>
+								{% elif app.status == 'cancelled' %}
+								<span class="badge bg-danger">Bekor qilindi</span>
+								{% endif %}
+							</td>
+
+							<td>
+								{% if app.status == 'pending' %}
+								<a
+									href="{% url 'update_status' app.id 'confirmed' %}"
+									class="btn btn-success btn-sm"
+									title="Tasdiqlash"
+								>
+									<i class="bi bi-check-lg"></i> Tasdiqlash
+								</a>
+
+								<a
+									href="{% url 'update_status' app.id 'cancelled' %}"
+									class="btn btn-outline-danger btn-sm"
+									title="Bekor qilish"
+									onclick="return confirm('Bekor qilasizmi?')"
+								>
+									<i class="bi bi-x-lg"></i>
+								</a>
+
+								{% elif app.status == 'confirmed' %}
+								<a
+									href="{% url 'add_medical_record' app.id %}"
+									class="btn btn-primary btn-sm"
+									title="Tashxis yozish va Yakunlash"
+								>
+									<i class="bi bi-file-earmark-medical"></i> Tashxis & Yakunlash
+								</a>
+
+								<a
+									href="{% url 'update_status' app.id 'cancelled' %}"
+									class="btn btn-outline-danger btn-sm ms-1"
+								>
+									<i class="bi bi-x-lg"></i>
+								</a>
+
+								{% else %}
+								<span class="text-muted small">Yopilgan</span>
+								{% endif %}
+							</td>
+						</tr>
+						{% endfor %}
+					</tbody>
+				</table>
+			</div>
+			{% else %}
+			<p class="text-muted text-center py-3">
+				Hozircha sizga hech kim yozilmagan.
+			</p>
+			{% endif %}
+		</div>
+	</div>
+</div>
+{% endblock %}

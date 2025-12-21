@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
-import datetime  # <--- 1. BU QATORNI QO'SHING
+import datetime
 
 
 class Speciality(models.TextChoices):
@@ -9,18 +9,30 @@ class Speciality(models.TextChoices):
     SURGEON = "surgeon", "Xirurg"
     DERMATOLOGIST = "dermatologist", "Dermatolog"
     PEDIATRICIAN = "pediatrician", "Pediatr"
+    THERAPIST = "therapist", "Terapevt"
 
 
 class Doctor(models.Model):
+    user = models.OneToOneField(
+        User, on_delete=models.SET_NULL, null=True, blank=True, related_name="doctor"
+    )
     first_name = models.CharField(max_length=100, verbose_name="Ism")
     last_name = models.CharField(max_length=100, verbose_name="Familiya")
     telephone = models.CharField(max_length=15, verbose_name="Telefon raqam")
     email = models.EmailField(verbose_name="Email", blank=True, null=True)
+    SPECIALITY_CHOICES = [
+        ("Stomatolog", "🦷 Stomatolog"),
+        ("Kardiolog", "❤️ Kardiolog"),
+        ("Xirurg", "🔪 Xirurg"),
+        ("Dermatolog", "🧴 Dermatolog"),
+        ("Pediatr", "👶 Pediatr"),
+        ("Terapevt", "🩺 Terapevt"),
+    ]
+
     speciality = models.CharField(
         max_length=50,
-        choices=Speciality.choices,
-        default=Speciality.DENTIST,
-        verbose_name="Mutaxassislik",
+        choices=SPECIALITY_CHOICES,  # <--- choices= deb yozish SHART
+        verbose_name="Mutaxassisligi",
     )
 
     bio = models.TextField(verbose_name="Shifokor haqida")
@@ -79,6 +91,8 @@ class Appointment(models.Model):
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default="pending")
     created_at = models.DateTimeField(auto_now_add=True)
     note = models.TextField(blank=True, null=True, verbose_name="Shikoyat")
+    diagnosis = models.TextField(blank=True, null=True, verbose_name="Tashxis")
+    prescription = models.TextField(blank=True, null=True, verbose_name="Retsept")
 
     def __str__(self):
         return f"{self.patient.username} -> {self.doctor.last_name} ({self.date})"

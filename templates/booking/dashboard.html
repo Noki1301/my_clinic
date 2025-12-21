@@ -25,86 +25,77 @@
 						<tr>
 							<td>{{ app.date }}</td>
 							<td>{{ app.time }}</td>
-							<td class="fw-bold">Dr. {{ app.doctor.last_name }}</td>
+							<td>Dr. {{ app.doctor.last_name }}</td>
 							<td>{{ app.doctor.get_speciality_display }}</td>
+
 							<td>
-								{% if app.status == 'pending' %}
-								<span class="badge bg-warning text-dark">Kutilmoqda</span>
-								{% elif app.status == 'confirmed' %}
-								<span class="badge bg-success">Tasdiqlandi</span>
-								{% elif app.status == 'cancelled' %}
-								<span class="badge bg-danger">Bekor qilindi</span>
+								{% if app.status == 'completed' %}
+								<span class="badge bg-success">Yakunlandi</span>
 								{% else %}
-								<span class="badge bg-secondary">Yakunlandi</span>
-								{% endif %}
-							</td>
-							<td>
-								{% if app.status == 'pending' %}
-								<span class="badge bg-warning text-dark">Kutilmoqda</span>
-								{% elif app.status == 'confirmed' %}
-								<span class="badge bg-success">Tasdiqlandi</span>
+								<span class="badge bg-secondary"
+									>{{ app.get_status_display }}</span
+								>
 								{% endif %}
 							</td>
 
 							<td>
+								{% if app.status == 'completed' %}
 								<button
 									type="button"
-									class="btn btn-outline-danger btn-sm"
+									class="btn btn-info btn-sm text-white"
 									data-bs-toggle="modal"
-									data-bs-target="#deleteModal{{ app.id }}"
-									title="Bekor qilish"
+									data-bs-target="#viewResult{{ app.id }}"
 								>
-									<i class="bi bi-trash"></i>
+									<i class="bi bi-eye"></i> Retseptni ko'rish
 								</button>
-							</td>
-							<div
-								class="modal fade"
-								id="deleteModal{{ app.id }}"
-								tabindex="-1"
-								aria-labelledby="deleteModalLabel{{ app.id }}"
-								aria-hidden="true"
-							>
-								<div class="modal-dialog modal-dialog-centered">
-									<div class="modal-content">
-										<div class="modal-header">
-											<h5 class="modal-title" id="deleteModalLabel{{ app.id }}">
-												Qabulni bekor qilish
-											</h5>
-											<button
-												type="button"
-												class="btn-close"
-												data-bs-dismiss="modal"
-												aria-label="Yopish"
-											></button>
-										</div>
 
-										<div class="modal-body">
-											Rostdan ham bu qabulni bekor qilmoqchimisiz?
-											<br /><strong>{{ app.date }} — {{ app.time }}</strong>
-										</div>
+								<div
+									class="modal fade"
+									id="viewResult{{ app.id }}"
+									tabindex="-1"
+								>
+									<div class="modal-dialog">
+										<div class="modal-content">
+											<div class="modal-header bg-success text-white">
+												<h5 class="modal-title">🏥 Shifokor xulosasi</h5>
+												<button
+													type="button"
+													class="btn-close btn-close-white"
+													data-bs-dismiss="modal"
+												></button>
+											</div>
+											<div class="modal-body">
+												<h6 class="fw-bold text-dark">Tashxis:</h6>
+												<p class="p-3 bg-light rounded border">
+													{{ app.diagnosis|default:"Kiritilmagan" }}
+												</p>
 
-										<div class="modal-footer">
-											<button
-												type="button"
-												class="btn btn-secondary"
-												data-bs-dismiss="modal"
-											>
-												Yo‘q
-											</button>
+												<h6 class="fw-bold text-dark mt-3">
+													Retsept va Tavsiyalar:
+												</h6>
+												<p
+													class="p-3 bg-light rounded border"
+													style="white-space: pre-line"
+												>
+													{{ app.prescription|default:"Kiritilmagan" }}
+												</p>
 
-											<form
-												action="{% url 'delete_appointment' app.id %}"
-												method="post"
-											>
-												{% csrf_token %}
-												<button type="submit" class="btn btn-danger">
-													Ha, bekor qilaman
-												</button>
-											</form>
+												<hr />
+												<small class="text-muted"
+													>Dr. {{ app.doctor.first_name }} {{
+													app.doctor.last_name }} | {{ app.date }}</small
+												>
+											</div>
 										</div>
 									</div>
 								</div>
-							</div>
+
+								{% elif app.status == 'pending' %}
+								<form action="..." ...>
+									<button ...><i class="bi bi-trash"></i></button>
+								</form>
+								{% endif %}
+							</td>
 						</tr>
 						{% endfor %}
 					</tbody>
