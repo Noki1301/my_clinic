@@ -1,86 +1,165 @@
-{% extends 'base.html' %}
+{% extends 'base.html' %} {% block title %}Tizimga kirish - MyClinic{% endblock
+%} {% block content %}
+<div class="min-vh-100 d-flex align-items-center justify-content-center py-5">
+	<div class="container">
+		<div class="row justify-content-center">
+			<div class="col-md-5 col-lg-4">
+				<!-- Login Card -->
+				<div class="glass-card p-5 fade-in-up">
+					<!-- Icon & Title -->
+					<div class="text-center mb-4">
+						<div class="mb-3" style="position: relative; display: inline-block">
+							<div
+								style="
+									width: 80px;
+									height: 80px;
+									background: var(--primary-gradient);
+									border-radius: 50%;
+									display: flex;
+									align-items: center;
+									justify-content: center;
+									box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+								"
+							>
+								<i
+									class="bi bi-hospital-fill text-white"
+									style="font-size: 2.5rem"
+								></i>
+							</div>
+						</div>
+						<h3 class="fw-bold text-dark mb-2">Xush kelibsiz!</h3>
+						<p class="text-muted">MyClinic tizimiga kirish</p>
+					</div>
 
-{% block title %}Tizimga kirish{% endblock %}
+					<!-- Error Messages -->
+					{% if form.errors %}
+					<div
+						class="alert alert-danger border-0 shadow-sm mb-4"
+						style="border-radius: 15px"
+					>
+						<i class="bi bi-exclamation-triangle-fill"></i>
+						<strong>Xatolik!</strong> Login yoki parol noto'g'ri kiritildi.
+					</div>
+					{% endif %}
 
-{% block content %}
-<div class="d-flex align-items-center justify-content-center min-vh-100" style="background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);">
-    
-    <div class="card shadow-lg border-0 rounded-4" style="max-width: 400px; width: 100%;">
-        <div class="card-body p-5">
-            
-            <div class="text-center mb-4">
-                <div class="bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px; font-size: 30px;">
-                    🏥
-                </div>
-                <h3 class="fw-bold text-dark">Xush kelibsiz!</h3>
-                <p class="text-muted small">Davom etish uchun tizimga kiring</p>
-            </div>
+					<!-- Login Form -->
+					<form method="post">
+						{% csrf_token %}
 
-            <form method="post">
-                {% csrf_token %}
-                
-                {% if form.errors %}
-                    <div class="alert alert-danger py-2 text-center small mb-3">
-                        Login yoki parol noto'g'ri!
-                    </div>
-                {% endif %}
+						<!-- Username Field -->
+						<div class="mb-3">
+							<label class="form-label fw-semibold text-dark">
+								<i class="bi bi-person-circle text-primary"></i> Foydalanuvchi
+								nomi
+							</label>
+							<input
+								type="text"
+								name="{{ form.username.name }}"
+								class="form-control form-control-lg"
+								placeholder="username"
+								value="{{ form.username.value|default:'' }}"
+								required
+							/>
+						</div>
 
-                <div class="custom-form-style">
-                    {{ form.as_p }}
-                </div>
+						<!-- Password Field -->
+						<div class="mb-4">
+							<label class="form-label fw-semibold text-dark">
+								<i class="bi bi-shield-lock text-primary"></i> Parol
+							</label>
+							<input
+								type="password"
+								name="{{ form.password.name }}"
+								class="form-control form-control-lg"
+								placeholder="••••••••"
+								required
+							/>
+						</div>
 
-                <div class="d-grid mt-4">
-                    <button type="submit" class="btn btn-primary btn-lg rounded-pill fw-bold shadow-sm">
-                        Kirish
-                    </button>
-                </div>
-            </form>
+						<!-- Submit Button -->
+						<div class="d-grid mb-3">
+							<button type="submit" class="btn btn-gradient-primary btn-lg">
+								<i class="bi bi-box-arrow-in-right"></i> Kirish
+							</button>
+						</div>
+					</form>
 
-            <div class="text-center mt-4">
-                <p class="text-muted small mb-0">Hali a'zo emasmisiz?</p>
-                <a href="{% url 'sign_up' %}" class="text-primary fw-bold text-decoration-none">Ro'yxatdan o'tish</a>
-            </div>
-        </div>
-    </div>
+					<!-- Divider -->
+					<div class="text-center my-4">
+						<div
+							style="
+								height: 1px;
+								background: linear-gradient(
+									to right,
+									transparent,
+									#dee2e6,
+									transparent
+								);
+							"
+						></div>
+					</div>
 
+					<!-- Register Link -->
+					<div class="text-center">
+						<p class="text-muted mb-2">Hali ro'yxatdan o'tmaganmisiz?</p>
+						<a
+							href="{% url 'sign_up' %}"
+							class="btn btn-outline-primary btn-lg w-100"
+							style="border-radius: 50px"
+						>
+							<i class="bi bi-person-plus"></i> Ro'yxatdan o'tish
+						</a>
+					</div>
+				</div>
+
+				<!-- Security Note -->
+				<div class="text-center mt-4 text-white-50">
+					<small>
+						<i class="bi bi-shield-check"></i>
+						Ma'lumotlaringiz xavfsiz muhofaza qilinadi
+					</small>
+				</div>
+			</div>
+		</div>
+	</div>
 </div>
 
 <style>
-    /* Inputlar (Username, Password) uchun dizayn */
-    .custom-form-style input[type="text"],
-    .custom-form-style input[type="password"] {
-        width: 100%;
-        padding: 12px 15px;
-        margin-bottom: 5px;
-        border: 1px solid #dee2e6;
-        border-radius: 10px;
-        background-color: #f8f9fa;
-        transition: all 0.3s ease;
-    }
+	.fade-in-up {
+		animation: fadeInUp 0.6s ease-out;
+	}
 
-    /* Inputga bosganda (Focus) */
-    .custom-form-style input:focus {
-        border-color: #0d6efd;
-        background-color: #fff;
-        outline: none;
-        box-shadow: 0 0 0 4px rgba(13, 110, 253, 0.1);
-    }
+	@keyframes fadeInUp {
+		from {
+			opacity: 0;
+			transform: translateY(30px);
+		}
+		to {
+			opacity: 1;
+			transform: translateY(0);
+		}
+	}
 
-    /* Label (Yozuvlar) uchun dizayn */
-    .custom-form-style label {
-        font-weight: 500;
-        color: #495057;
-        margin-bottom: 5px;
-        margin-top: 10px;
-        display: block;
-    }
-    
-    /* Yordamchi matnlar (help text) ni yashirish yoki kichraytirish */
-    .helptext {
-        font-size: 11px;
-        color: #adb5bd;
-        display: block;
-        margin-bottom: 10px;
-    }
+	.glass-card {
+		position: relative;
+	}
+
+	.glass-card::before {
+		content: '';
+		position: absolute;
+		top: -2px;
+		left: -2px;
+		right: -2px;
+		bottom: -2px;
+		background: var(--primary-gradient);
+		border-radius: 22px;
+		z-index: -1;
+		opacity: 0;
+		transition: opacity 0.3s ease;
+	}
+
+	.glass-card:hover::before {
+		opacity: 0.3;
+	}
 </style>
 {% endblock %}

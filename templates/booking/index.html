@@ -1,84 +1,104 @@
 {% extends 'base.html' %} {% block title %}Bosh Sahifa - MyClinic{% endblock %}
 {% block content %}
 <div class="container py-5">
-	<div class="text-center mb-5">
-		<h1 class="display-4 fw-bold">Bizning Malakali Shifokorlar</h1>
-		<p class="lead text-muted">
-			Sog'lig'ingizni ishonchli qo'llarga topshiring
+	<!-- Hero Section -->
+	<div class="text-center mb-5 fade-in-up">
+		<h1
+			class="display-3 fw-bold"
+			style="
+				background: var(--primary-gradient);
+				-webkit-background-clip: text;
+				-webkit-text-fill-color: transparent;
+			"
+		>
+			Bizning Malakali Shifokorlar
+		</h1>
+		<p class="lead text-white-50 mt-3">
+			<i class="bi bi-heart-pulse-fill text-danger"></i> Sog'lig'ingizni
+			ishonchli qo'llarga topshiring
 		</p>
 	</div>
-	<div
-		class="card shadow-sm mb-5 border-0 rounded-4"
-		style="background: #f8f9fa"
-	>
-		<div class="card-body p-4">
-			<form method="get" action="{% url 'home' %}">
-				<div class="input-group input-group-lg">
-					<span class="input-group-text bg-white border-0 text-primary">
-						<i class="bi bi-search"></i>
-					</span>
 
-					<input
-						type="text"
-						name="q"
-						class="form-control border-0 bg-white"
-						placeholder="Shifokor ismi yoki mutaxassisligi (masalan: Xirurg)..."
-						value="{{ search_query|default:'' }}"
-						aria-label="Search"
-					/>
-
-					<button class="btn btn-primary px-4 rounded-end" type="submit">
-						Qidirish
+	<!-- Search & Filter Section -->
+	<div class="glass-card mb-5 p-4 fade-in-up" style="animation-delay: 0.2s">
+		<form method="get" action="{% url 'home' %}">
+			<div class="row g-3 align-items-center">
+				<div class="col-md-10">
+					<div class="input-group input-group-lg">
+						<span class="input-group-text bg-white border-0">
+							<i class="bi bi-search text-primary fs-5"></i>
+						</span>
+						<input
+							type="text"
+							name="q"
+							class="form-control border-0 search-input"
+							placeholder="Shifokor ismi yoki mutaxassisligi (masalan: Kardiolog, Xirurg)..."
+							value="{{ search_query|default:'' }}"
+						/>
+					</div>
+				</div>
+				<div class="col-md-2">
+					<button class="btn btn-gradient-primary w-100 btn-lg" type="submit">
+						<i class="bi bi-search"></i> Qidirish
 					</button>
 				</div>
-			</form>
+			</div>
+		</form>
 
-			<div class="mt-4 d-flex flex-wrap gap-2 justify-content-center">
+		<!-- Specialty Filters -->
+		<div class="mt-4">
+			<p class="text-muted mb-3 fw-semibold">
+				<i class="bi bi-funnel"></i> Tez filter:
+			</p>
+			<div class="d-flex flex-wrap gap-2 justify-content-center">
 				<a
 					href="{% url 'home' %}"
-					class="btn btn-outline-secondary rounded-pill btn-sm"
-					>Barchasi</a
+					class="btn btn-outline-secondary rounded-pill"
 				>
-				<a
-					href="?spec=Stomatolog"
-					class="btn btn-outline-primary rounded-pill btn-sm"
-					>🦷 Stomatolog</a
-				>
-				<a
-					href="?spec=Kardiolog"
-					class="btn btn-outline-danger rounded-pill btn-sm"
-					>❤️ Kardiolog</a
-				>
-				<a
-					href="?spec=Xirurg"
-					class="btn btn-outline-success rounded-pill btn-sm"
-					>🔪 Xirurg</a
-				>
-				<a
-					href="?spec=Dermatolog"
-					class="btn btn-outline-warning rounded-pill btn-sm"
-					>🧴 Dermatolog</a
-				>
-				<a href="?spec=Pediatr" class="btn btn-outline-info rounded-pill btn-sm"
-					>👶 Pediatr</a
-				>
-				<a
-					href="?spec=Terapevt"
-					class="btn btn-outline-secondary rounded-pill btn-sm"
-					>🩺 Terapevt</a
-				>
+					<i class="bi bi-grid-3x3-gap"></i> Barchasi
+				</a>
+				<a href="?spec=Stomatolog" class="btn btn-outline-primary rounded-pill">
+					🦷 Stomatolog
+				</a>
+				<a href="?spec=Kardiolog" class="btn btn-outline-danger rounded-pill">
+					❤️ Kardiolog
+				</a>
+				<a href="?spec=Xirurg" class="btn btn-outline-success rounded-pill">
+					🔪 Xirurg
+				</a>
+				<a href="?spec=Dermatolog" class="btn btn-outline-warning rounded-pill">
+					🧴 Dermatolog
+				</a>
+				<a href="?spec=Pediatr" class="btn btn-outline-info rounded-pill">
+					👶 Pediatr
+				</a>
+				<a href="?spec=Terapevt" class="btn btn-outline-secondary rounded-pill">
+					🩺 Terapevt
+				</a>
 			</div>
 		</div>
 	</div>
 
-	<p class="text-muted mb-4">
-		Topildi: <strong>{{ count }}</strong> ta shifokor
-	</p>
+	<!-- Results Counter -->
+	<div class="mb-4 fade-in-up" style="animation-delay: 0.3s">
+		<div class="glass-card p-3 d-inline-block">
+			<i class="bi bi-people-fill text-primary"></i>
+			<span class="text-dark fw-semibold"
+				>Topildi: <span class="badge bg-primary">{{ count }}</span> ta
+				shifokor</span
+			>
+		</div>
+	</div>
+
+	<!-- Doctor Cards -->
 	<div class="row">
 		{% for doctor in doctors %}
-		<div class="col-md-4 mb-4">
-			<div class="card shadow-sm h-100 border-0">
-				<div style="height: 250px; overflow: hidden">
+		<div
+			class="col-lg-4 col-md-6 mb-4 fade-in-up"
+			style="animation-delay: {{ forloop.counter|add:3 }}0ms;"
+		>
+			<div class="doctor-card h-100">
+				<div style="height: 280px; overflow: hidden; position: relative">
 					{% if doctor.image %}
 					<img
 						src="{{ doctor.image.url }}"
@@ -88,49 +108,108 @@
 					/>
 					{% else %}
 					<div
-						class="bg-secondary text-white w-100 h-100 d-flex align-items-center justify-content-center"
+						class="w-100 h-100 d-flex align-items-center justify-content-center"
+						style="background: var(--primary-gradient)"
 					>
 						<span class="fs-1">👨‍⚕️</span>
 					</div>
 					{% endif %}
+
+					<!-- Specialty Badge Overlay -->
+					<div style="position: absolute; top: 15px; right: 15px">
+						<span
+							class="badge badge-modern"
+							style="background: var(--success-gradient)"
+						>
+							{{ doctor.get_speciality_display }}
+						</span>
+					</div>
 				</div>
 
-				<div class="card-body">
-					<h5 class="card-title fw-bold">
+				<div class="card-body p-4">
+					<h5 class="card-title fw-bold mb-2">
+						<i class="bi bi-person-badge text-primary"></i>
 						{{ doctor.first_name }} {{ doctor.last_name }}
 					</h5>
-					<span class="badge bg-info text-dark mb-2"
-						>{{ doctor.get_speciality_display }}</span
-					>
-					<p class="card-text text-muted small">
+
+					<p class="card-text text-muted small mb-3">
 						{{ doctor.bio|truncatewords:15 }}
 					</p>
 
-					<div class="d-flex justify-content-between align-items-center mt-3">
-						<span class="fs-5 fw-bold text-primary"
-							>{{ doctor.price }} so'm</span
+					<!-- Info Section -->
+					<div class="d-flex justify-content-between align-items-center mb-3">
+						<div>
+							<small class="text-muted d-block">Ish vaqti</small>
+							<span class="fw-semibold">
+								<i class="bi bi-clock text-info"></i>
+								{{ doctor.work_start_time|slice:":5" }} - {{
+								doctor.work_end_time|slice:":5" }}
+							</span>
+						</div>
+						<div class="text-end">
+							<small class="text-muted d-block">Narxi</small>
+							<span
+								class="fs-5 fw-bold"
+								style="
+									background: var(--primary-gradient);
+									-webkit-background-clip: text;
+									-webkit-text-fill-color: transparent;
+								"
+							>
+								{{ doctor.price }} so'm
+							</span>
+						</div>
+					</div>
+
+					<!-- Action Buttons -->
+					<div class="d-grid gap-2">
+						<a
+							href="{% url 'book_appointment' doctor.id %}"
+							class="btn btn-gradient-primary"
 						>
+							<i class="bi bi-calendar-check"></i> Qabulga yozilish
+						</a>
 						<a
 							href="{% url 'doctor_detail' doctor.id %}"
-							class="btn btn-outline-primary btn-sm"
-							>Batafsil</a
+							class="btn btn-outline-primary"
 						>
+							<i class="bi bi-info-circle"></i> Batafsil ma'lumot
+						</a>
 					</div>
-				</div>
-				<div class="card-footer bg-transparent border-top-0">
-					<a
-						href="{% url 'book_appointment' doctor.id %}"
-						class="btn btn-primary w-100"
-						>📅 Qabulga yozilish</a
-					>
 				</div>
 			</div>
 		</div>
 		{% empty %}
-		<div class="col-12 text-center">
-			<p class="alert alert-warning">Hozircha shifokorlar ro'yxati bo'sh.</p>
+		<div class="col-12">
+			<div class="glass-card text-center p-5">
+				<i class="bi bi-emoji-frown fs-1 text-warning mb-3"></i>
+				<h4 class="text-dark">Shifokorlar topilmadi</h4>
+				<p class="text-muted">
+					Iltimos, boshqa qidiruv so'zini kiriting yoki filterni o'zgartiring
+				</p>
+				<a href="{% url 'home' %}" class="btn btn-gradient-primary mt-3">
+					<i class="bi bi-arrow-clockwise"></i> Qayta yuklash
+				</a>
+			</div>
 		</div>
 		{% endfor %}
 	</div>
 </div>
+
+<style>
+	.fade-in-up {
+		animation: fadeInUp 0.6s ease-out both;
+	}
+
+	@keyframes fadeInUp {
+		from {
+			opacity: 0;
+			transform: translateY(30px);
+		}
+		to {
+			opacity: 1;
+			transform: translateY(0);
+		}
+	}
+</style>
 {% endblock %}

@@ -1,47 +1,240 @@
-{% extends 'base.html' %} 
-{% block title %}Qabulga yozilish{% endblock %} {% block content %}
+{% extends 'base.html' %} {% block title %}Qabulga yozilish - MyClinic{%
+endblock %} {% block content %}
 <div class="container py-5">
 	<div class="row justify-content-center">
-		<div class="col-md-6">
-			<div class="card shadow">
-				<div class="card-header bg-primary text-white">
-					<h4 class="mb-0">Qabulga yozilish</h4>
+		<div class="col-lg-8">
+			<!-- Doctor Info Card -->
+			<div class="glass-card mb-4 fade-in-up">
+				<div class="row g-0">
+					<div class="col-md-4">
+						{% if doctor.image %}
+						<img
+							src="{{ doctor.image.url }}"
+							class="img-fluid rounded-start h-100"
+							style="object-fit: cover"
+							alt="{{ doctor.first_name }}"
+						/>
+						{% else %}
+						<div
+							class="h-100 d-flex align-items-center justify-content-center"
+							style="
+								background: var(--primary-gradient);
+								border-radius: 20px 0 0 20px;
+							"
+						>
+							<i
+								class="bi bi-person-circle text-white"
+								style="font-size: 5rem"
+							></i>
+						</div>
+						{% endif %}
+					</div>
+					<div class="col-md-8">
+						<div class="p-4">
+							<div
+								class="d-flex justify-content-between align-items-start mb-3"
+							>
+								<div>
+									<h4 class="fw-bold text-dark mb-2">
+										<i class="bi bi-person-badge text-primary"></i>
+										{{ doctor.first_name }} {{ doctor.last_name }}
+									</h4>
+									<span
+										class="badge badge-modern"
+										style="background: var(--success-gradient)"
+									>
+										{{ doctor.get_speciality_display }}
+									</span>
+								</div>
+								<div class="text-end">
+									<div
+										class="fs-3 fw-bold"
+										style="
+											background: var(--primary-gradient);
+											-webkit-background-clip: text;
+											-webkit-text-fill-color: transparent;
+										"
+									>
+										{{ doctor.price }} so'm
+									</div>
+									<small class="text-muted">Konsultatsiya narxi</small>
+								</div>
+							</div>
+
+							<div class="row g-3 mt-3">
+								<div class="col-6">
+									<div
+										class="p-3 rounded-3"
+										style="background: rgba(102, 126, 234, 0.1)"
+									>
+										<i class="bi bi-clock text-primary"></i>
+										<small class="text-muted d-block">Ish vaqti</small>
+										<strong class="text-dark"
+											>{{ doctor.work_start_time|slice:":5" }} - {{
+											doctor.work_end_time|slice:":5" }}</strong
+										>
+									</div>
+								</div>
+								<div class="col-6">
+									<div
+										class="p-3 rounded-3"
+										style="background: rgba(17, 153, 142, 0.1)"
+									>
+										<i class="bi bi-telephone text-success"></i>
+										<small class="text-muted d-block">Telefon</small>
+										<strong class="text-dark"
+											>{{ doctor.telephone|default:"Kiritilmagan" }}</strong
+										>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
 				</div>
-				<div class="card-body">
-					<p class="lead">
-						Shifokor:
-						<strong>{{ doctor.first_name }} {{ doctor.last_name }}</strong>
-					</p>
-					<p class="text-muted">Narxi: {{ doctor.price }} so'm</p>
-					<hr />
+			</div>
 
-					<form method="post">
-						{% csrf_token %}
+			<!-- Booking Form Card -->
+			<div class="glass-card p-4 fade-in-up" style="animation-delay: 0.2s">
+				<div class="text-center mb-4">
+					<div
+						style="
+							width: 60px;
+							height: 60px;
+							background: var(--success-gradient);
+							border-radius: 50%;
+							display: flex;
+							align-items: center;
+							justify-content: center;
+							margin: 0 auto;
+							box-shadow: 0 8px 20px rgba(17, 153, 142, 0.4);
+						"
+					>
+						<i class="bi bi-calendar-check text-white fs-3"></i>
+					</div>
+					<h4 class="fw-bold text-dark mt-3 mb-2">Qabulga yozilish</h4>
+					<p class="text-muted">Sana va vaqtni tanlang</p>
+				</div>
 
-						<div class="mb-3">
-							<label>Sana:</label>
+				<form method="post">
+					{% csrf_token %}
+
+					<div class="row g-3">
+						<!-- Date Field -->
+						<div class="col-md-6">
+							<label class="form-label fw-semibold text-dark">
+								<i class="bi bi-calendar3 text-primary"></i> Sana
+							</label>
 							{{ form.date }}
+							<small class="text-muted d-block mt-1">
+								<i class="bi bi-info-circle"></i> Bugungi yoki keyingi kunni
+								tanlang
+							</small>
 						</div>
 
-						<div class="mb-3">
-							<label>Vaqt:</label>
+						<!-- Time Field -->
+						<div class="col-md-6">
+							<label class="form-label fw-semibold text-dark">
+								<i class="bi bi-clock text-primary"></i> Vaqt
+							</label>
 							{{ form.time }}
-							<small class="text-muted"
-								>Ish vaqti: {{ doctor.work_start_time }} - {{doctor.work_end_time }}</small>
+							<small class="text-muted d-block mt-1">
+								<i class="bi bi-info-circle"></i> Ish vaqti: {{
+								doctor.work_start_time|slice:":5" }} - {{
+								doctor.work_end_time|slice:":5" }}
+							</small>
 						</div>
 
-						<div class="mb-3">
-							<label>Izoh:</label>
+						<!-- Note Field -->
+						<div class="col-12">
+							<label class="form-label fw-semibold text-dark">
+								<i class="bi bi-chat-left-text text-primary"></i> Qo'shimcha
+								izoh
+							</label>
 							{{ form.note }}
+							<small class="text-muted d-block mt-1">
+								<i class="bi bi-info-circle"></i> Shikoyat yoki alomatlaringizni
+								yozing (ixtiyoriy)
+							</small>
 						</div>
+					</div>
 
-						<button type="submit" class="btn btn-success w-100">
-							Tasdiqlash
-						</button>
-					</form>
+					<!-- Action Buttons -->
+					<div class="row g-3 mt-4">
+						<div class="col-md-6">
+							<a
+								href="{% url 'home' %}"
+								class="btn btn-outline-secondary w-100 btn-lg"
+							>
+								<i class="bi bi-arrow-left"></i> Ortga
+							</a>
+						</div>
+						<div class="col-md-6">
+							<button
+								type="submit"
+								class="btn btn-gradient-success w-100 btn-lg"
+							>
+								<i class="bi bi-check-circle"></i> Tasdiqlash
+							</button>
+						</div>
+					</div>
+				</form>
+			</div>
+
+			<!-- Info Alert -->
+			<div
+				class="glass-card p-3 mt-4 fade-in-up"
+				style="animation-delay: 0.3s; background: rgba(13, 202, 240, 0.1)"
+			>
+				<div class="d-flex align-items-center">
+					<i class="bi bi-info-circle-fill text-info fs-3 me-3"></i>
+					<div>
+						<strong class="text-dark">Eslatma:</strong>
+						<p class="text-muted mb-0 small">
+							Qabul tasdiqlangandan so'ng sizga SMS yoki email orqali xabar
+							yuboriladi. Iltimos, belgilangan vaqtda klinikaga tashrif
+							buyuring.
+						</p>
+					</div>
 				</div>
 			</div>
 		</div>
 	</div>
 </div>
+
+<style>
+	.fade-in-up {
+		animation: fadeInUp 0.6s ease-out both;
+	}
+
+	@keyframes fadeInUp {
+		from {
+			opacity: 0;
+			transform: translateY(30px);
+		}
+		to {
+			opacity: 1;
+			transform: translateY(0);
+		}
+	}
+
+	/* Form styling */
+	.form-control,
+	.form-select {
+		border-radius: 15px;
+		border: 2px solid #e0e0e0;
+		padding: 12px 20px;
+		transition: all 0.3s ease;
+	}
+
+	.form-control:focus,
+	.form-select:focus {
+		border-color: #667eea;
+		box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+	}
+
+	textarea.form-control {
+		min-height: 120px;
+		resize: vertical;
+	}
+</style>
 {% endblock %}

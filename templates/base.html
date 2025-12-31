@@ -1,149 +1,152 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="uz">
-	<head>
-		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<title>{% block title %}MyClinic{% endblock %}</title>
-		<link
-			href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
-			rel="stylesheet"
-		/>
-
-		<link
-			rel="stylesheet"
-			href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
-		/>
-		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-	</head>
-	<body class="d-flex flex-column min-vh-100">
-		<nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
-			<div class="container">
-				<a class="navbar-brand fw-bold" href="{% url 'home' %}">🏥 MyClinic</a>
-				<button
-					class="navbar-toggler"
-					type="button"
-					data-bs-toggle="collapse"
-					data-bs-target="#navbarNav"
-				>
-					<span class="navbar-toggler-icon"></span>
-				</button>
-				<div class="collapse navbar-collapse" id="navbarNav">
-					<ul class="navbar-nav ms-auto">
-						{% if not user.doctor %}
-						<li class="nav-item">
-							<a class="nav-link" href="{% url 'home' %}">Bosh sahifa</a>
-						</li>
-						<li class="nav-item">
-							<a class="nav-link" href="#">Biz haqimizda</a>
-						</li>
-						{% endif %} {% if user.is_authenticated %}
-
-						<li class="nav-item">
-							<a
-								class="nav-link text-warning fw-bold"
-								href="{% url 'dashboard' %}"
-							>
-								{% if user.doctor %} 👨‍⚕️ Kabinet (Dr. {{ user.doctor.last_name }}) {% else %} 👤 Kabinetim ({{ user.username }}) {% endif %}
-							</a>
-						</li>
-						<li class="nav-item">
-							<a
-								class="nav-link"
-								href="{% url 'edit_profile' %}"
-								title="Sozlamalar"
-							>
-								⚙️ Sozlamalar
-							</a>
-						</li>
-						<li class="nav-item">
-							<a class="nav-link text-danger" href="{% url 'sign_out' %}"
-								>Chiqish</a
-							>
-						</li>
-
-						{% else %}
-						<li class="nav-item">
-							<a class="nav-link" href="{% url 'sign_in' %}">Kirish</a>
-						</li>
-						<li class="nav-item">
-							<a class="btn btn-outline-light ms-2" href="{% url 'sign_up' %}"
-								>Ro'yxatdan o'tish</a
-							>
-						</li>
-						{% endif %} {% if user.is_superuser %}
-						<li class="nav-item">
-							<a
-								class="nav-link text-primary fw-bold border border-primary rounded-pill px-3 mx-2"
-								href="{% url 'admin_dashboard' %}"
-							>
-								⚙️ Boshqaruv
-							</a>
-						</li>
-						{% endif %}
-					</ul>
-				</div>
-			</div>
-		</nav>
-
-		<main class="flex-grow-1">
-			<div class="container mt-3">
-				{% if messages %} {% for message in messages %}
-				<div
-					class="alert alert-{{ message.tags }} alert-dismissible fade show"
-					role="alert"
-				>
-					{{ message }}
-					<button
-						type="button"
-						class="btn-close"
-						data-bs-dismiss="alert"
-						aria-label="Close"
-					></button>
-				</div>
-				{% endfor %} {% endif %}
-			</div>
-
-			{% block content %} {% endblock %}
-		</main>
-
-		<footer class="bg-dark text-white text-center py-3 mt-5">
-			<div class="container">
-				<p class="mb-0">&copy; 2024 MyClinic. Barcha huquqlar himoyalangan.</p>
-			</div>
-		</footer>
-		{% if messages %}
-		<div aria-live="polite" aria-atomic="true" class="position-relative">
-			<div class="toast-container position-fixed bottom-0 end-0 p-3">
-				{% for message in messages %}
-				<div
-					class="toast align-items-center text-bg-success border-0 shadow"
-					role="alert"
-					aria-live="assertive"
-					aria-atomic="true"
-				>
-					<div class="d-flex">
-						<div class="toast-body">{{ message }}</div>
-						<button
-							type="button"
-							class="btn-close btn-close-white me-2 m-auto"
-							data-bs-dismiss="toast"
-							aria-label="Close"
-						></button>
-					</div>
-				</div>
-				{% endfor %}
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>{% block title %}MyClinic - Zamonaviy Tibbiy Xizmat{% endblock %}</title>
+	
+	<!-- Google Fonts -->
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+	
+	<!-- Bootstrap 5 -->
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+	
+	<!-- Bootstrap Icons -->
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+	
+	<!-- Custom CSS -->
+	<link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+	<!-- Modern Navigation -->
+	<nav class="navbar navbar-expand-lg shadow-sm sticky-top">
+		<div class="container">
+			<a class="navbar-brand" href="{% url 'home' %}">
+				<i class="bi bi-hospital-fill"></i> MyClinic
+			</a>
+			<button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+				<span class="navbar-toggler-icon"></span>
+			</button>
+			<div class="collapse navbar-collapse" id="navbarNav">
+				<ul class="navbar-nav mx-auto">
+					{% if not user.doctor %}
+					<li class="nav-item">
+						<a class="nav-link" href="{% url 'home' %}">
+							<i class="bi bi-house-door"></i> Bosh sahifa
+						</a>
+					</li>
+					{% endif %}
+				</ul>
+				<ul class="navbar-nav ms-auto align-items-center">
+					{% if user.is_authenticated %}
+					<li class="nav-item dropdown">
+						<a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+							<i class="bi bi-person-circle fs-5"></i>
+							{% if user.doctor %}
+								Dr. {{ user.doctor.last_name }}
+							{% else %}
+								{{ user.username }}
+							{% endif %}
+						</a>
+						<ul class="dropdown-menu dropdown-menu-end shadow">
+							<li><a class="dropdown-item" href="{% url 'dashboard' %}">
+								<i class="bi bi-speedometer2"></i> Dashboard
+							</a></li>
+							<li><a class="dropdown-item" href="{% url 'edit_profile' %}">
+								<i class="bi bi-gear"></i> Sozlamalar
+							</a></li>
+							{% if user.is_superuser %}
+							<li><hr class="dropdown-divider"></li>
+							<li><a class="dropdown-item" href="{% url 'admin_dashboard' %}">
+								<i class="bi bi-shield-check"></i> Boshqaruv
+							</a></li>
+							{% endif %}
+							<li><hr class="dropdown-divider"></li>
+							<li><a class="dropdown-item text-danger" href="{% url 'sign_out' %}">
+								<i class="bi bi-box-arrow-right"></i> Chiqish
+							</a></li>
+						</ul>
+					</li>
+					{% else %}
+					<li class="nav-item">
+						<a class="nav-link" href="{% url 'sign_in' %}">Kirish</a>
+					</li>
+					<li class="nav-item">
+						<a class="btn btn-gradient-primary ms-2" href="{% url 'sign_up' %}">
+							Ro'yxatdan o'tish
+						</a>
+					</li>
+					{% endif %}
+				</ul>
 			</div>
 		</div>
-		{% endif %}
+	</nav>
 
-		<script>
-			document.addEventListener('DOMContentLoaded', function () {
-				document.querySelectorAll('.toast').forEach(function (toastEl) {
-					new bootstrap.Toast(toastEl, { delay: 3000 }).show()
-				})
-			})
-		</script>
+	<!-- Main Content -->
+	<main class="py-4">
+		<!-- Messages -->
+		<div class="container">
+			{% if messages %}
+			<div class="row">
+				<div class="col-12">
+					{% for message in messages %}
+					<div class="alert alert-{{ message.tags }} alert-dismissible fade show shadow-sm" role="alert">
+						<i class="bi bi-check-circle-fill"></i> {{ message }}
+						<button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+					</div>
+					{% endfor %}
+				</div>
+			</div>
+			{% endif %}
+		</div>
 
-		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-	</body>
+		<!-- Page Content -->
+		{% block content %}{% endblock %}
+	</main>
+
+	<!-- Modern Footer -->
+	<footer class="footer mt-auto">
+		<div class="container">
+			<div class="row align-items-center">
+				<div class="col-md-6 text-center text-md-start">
+					<p class="mb-0">
+						<strong><i class="bi bi-hospital-fill"></i> MyClinic</strong> - Zamonaviy tibbiy xizmat
+					</p>
+				</div>
+				<div class="col-md-6 text-center text-md-end">
+					<p class="mb-0">
+						&copy; 2025 Barcha huquqlar himoyalangan
+					</p>
+				</div>
+			</div>
+		</div>
+	</footer>
+
+	<!-- Bootstrap JS -->
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+	
+	<!-- Custom JS for animations -->
+	<script>
+		// Auto-hide alerts after 5 seconds
+		setTimeout(function() {
+			const alerts = document.querySelectorAll('.alert');
+			alerts.forEach(alert => {
+				const bsAlert = new bootstrap.Alert(alert);
+				bsAlert.close();
+			});
+		}, 5000);
+
+		// Add fade-in animation to cards
+		document.addEventListener('DOMContentLoaded', function() {
+			const cards = document.querySelectorAll('.card, .glass-card');
+			cards.forEach((card, index) => {
+				card.style.animationDelay = `${index * 0.1}s`;
+				card.classList.add('fade-in-up');
+			});
+		});
+	</script>
+</body>
 </html>

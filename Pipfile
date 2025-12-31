@@ -5,6 +5,8 @@ name = "pypi"
 
 [packages]
 django = "==5"
+python-dotenv = "*"
+pillow = "*"
 
 [dev-packages]
 

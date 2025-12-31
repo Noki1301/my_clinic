@@ -1,101 +1,215 @@
-{% extends 'base.html' %}
+{% extends 'base.html' %} {% block title %}Ro'yxatdan o'tish - MyClinic{%
+endblock %} {% block content %}
+<div class="min-vh-100 d-flex align-items-center justify-content-center py-5">
+	<div class="container">
+		<div class="row justify-content-center">
+			<div class="col-md-6 col-lg-5">
+				<!-- Register Card -->
+				<div class="glass-card p-5 fade-in-up">
+					<!-- Icon & Title -->
+					<div class="text-center mb-4">
+						<div class="mb-3" style="position: relative; display: inline-block">
+							<div
+								style="
+									width: 80px;
+									height: 80px;
+									background: var(--success-gradient);
+									border-radius: 50%;
+									display: flex;
+									align-items: center;
+									justify-content: center;
+									box-shadow: 0 8px 20px rgba(17, 153, 142, 0.4);
+								"
+							>
+								<i
+									class="bi bi-person-plus-fill text-white"
+									style="font-size: 2.5rem"
+								></i>
+							</div>
+						</div>
+						<h3 class="fw-bold text-dark mb-2">Yangi hisob yaratish</h3>
+						<p class="text-muted">MyClinic ga xush kelibsiz!</p>
+					</div>
 
-{% block title %}Ro'yxatdan o'tish{% endblock %}
+					<!-- Error Messages -->
+					{% if form.errors %}
+					<div
+						class="alert alert-danger border-0 shadow-sm mb-4"
+						style="border-radius: 15px"
+					>
+						<i class="bi bi-exclamation-triangle-fill"></i>
+						<strong>Xatolik!</strong> Iltimos, ma'lumotlarni to'g'ri kiriting.
+					</div>
+					{% endif %}
 
-{% block content %}
-<div class="d-flex align-items-center justify-content-center min-vh-100" style="background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);">
-    
-    <div class="card shadow-lg border-0 rounded-4 my-5" style="max-width: 500px; width: 100%;">
-        <div class="card-body p-5">
-            
-            <div class="text-center mb-4">
-                <div class="bg-success text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px; font-size: 30px;">
-                    👤
-                </div>
-                <h3 class="fw-bold text-success">Yangi hisob</h3>
-                <p class="text-muted small">Qisqa vaqt ichida ro'yxatdan o'ting</p>
-            </div>
+					<!-- Register Form -->
+					<form method="post">
+						{% csrf_token %}
 
-            <form method="post">
-                {% csrf_token %}
-                
-                {% if form.errors %}
-                    <div class="alert alert-danger py-2 small mb-3 text-center">
-                        Ma'lumotlarni to'g'ri kiriting!
-                    </div>
-                {% endif %}
+						<!-- Username -->
+						<div class="mb-3">
+							<label class="form-label fw-semibold text-dark">
+								<i class="bi bi-person-circle text-success"></i> Foydalanuvchi
+								nomi
+							</label>
+							<input
+								type="text"
+								name="{{ form.username.name }}"
+								class="form-control form-control-lg"
+								placeholder="username"
+								value="{{ form.username.value|default:'' }}"
+								required
+							/>
+							{% if form.username.errors %}
+							<small class="text-danger d-block mt-1">
+								{% for error in form.username.errors %}{{ error }}{% endfor %}
+							</small>
+							{% endif %}
+						</div>
 
-                <div class="custom-form-style">
-                    {{ form.as_p }}
-                </div>
+						<!-- Email (optional) -->
+						{% if form.email %}
+						<div class="mb-3">
+							<label class="form-label fw-semibold text-dark">
+								<i class="bi bi-envelope text-success"></i> Email
+							</label>
+							<input
+								type="email"
+								name="{{ form.email.name }}"
+								class="form-control form-control-lg"
+								placeholder="example@email.com"
+								value="{{ form.email.value|default:'' }}"
+							/>
+						</div>
+						{% endif %}
 
-                <div class="d-grid mt-4">
-                    <button type="submit" class="btn btn-success btn-lg rounded-pill fw-bold shadow-sm">
-                        Ro'yxatdan o'tish
-                    </button>
-                </div>
-            </form>
+						<!-- Password 1 -->
+						<div class="mb-3">
+							<label class="form-label fw-semibold text-dark">
+								<i class="bi bi-shield-lock text-success"></i> Parol
+							</label>
+							<input
+								type="password"
+								name="{{ form.password1.name }}"
+								class="form-control form-control-lg"
+								placeholder="Kuchli parol kiriting"
+								required
+							/>
+							{% if form.password1.errors %}
+							<small class="text-danger d-block mt-1">
+								{% for error in form.password1.errors %}{{ error }}{% endfor %}
+							</small>
+							{% endif %}
+						</div>
 
-            <div class="text-center mt-4">
-                <p class="text-muted small mb-0">Allaqachon hisobingiz bormi?</p>
-                <a href="{% url 'sign_in' %}" class="text-success fw-bold text-decoration-none">Kirish</a>
-            </div>
-        </div>
-    </div>
+						<!-- Password 2 -->
+						<div class="mb-4">
+							<label class="form-label fw-semibold text-dark">
+								<i class="bi bi-shield-check text-success"></i> Parolni
+								tasdiqlash
+							</label>
+							<input
+								type="password"
+								name="{{ form.password2.name }}"
+								class="form-control form-control-lg"
+								placeholder="Parolni qayta kiriting"
+								required
+							/>
+							{% if form.password2.errors %}
+							<small class="text-danger d-block mt-1">
+								{% for error in form.password2.errors %}{{ error }}{% endfor %}
+							</small>
+							{% endif %}
+						</div>
 
+						<!-- Submit Button -->
+						<div class="d-grid mb-3">
+							<button type="submit" class="btn btn-gradient-success btn-lg">
+								<i class="bi bi-check-circle"></i> Ro'yxatdan o'tish
+							</button>
+						</div>
+					</form>
+
+					<!-- Divider -->
+					<div class="text-center my-4">
+						<div
+							style="
+								height: 1px;
+								background: linear-gradient(
+									to right,
+									transparent,
+									#dee2e6,
+									transparent
+								);
+							"
+						></div>
+					</div>
+
+					<!-- Login Link -->
+					<div class="text-center">
+						<p class="text-muted mb-2">Allaqachon hisobingiz bormi?</p>
+						<a
+							href="{% url 'sign_in' %}"
+							class="btn btn-outline-success btn-lg w-100"
+							style="border-radius: 50px"
+						>
+							<i class="bi bi-box-arrow-in-right"></i> Kirish
+						</a>
+					</div>
+				</div>
+
+				<!-- Info Note -->
+				<div class="text-center mt-4">
+					<div class="glass-card p-3">
+						<small class="text-dark">
+							<i class="bi bi-info-circle text-primary"></i>
+							Ro'yxatdan o'tish orqali siz bizning
+							<a href="#" class="text-decoration-none">Shartlarimiz</a>ga
+							rozilik bildirasiz
+						</small>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
 </div>
 
 <style>
-    /* 1. Inputlar dizayni */
-    .custom-form-style input {
-        width: 100%;
-        padding: 12px 15px;
-        margin-bottom: 5px;
-        border: 1px solid #dee2e6;
-        border-radius: 10px;
-        background-color: #f8f9fa;
-        transition: all 0.3s ease;
-    }
+	.fade-in-up {
+		animation: fadeInUp 0.6s ease-out;
+	}
 
-    .custom-form-style input:focus {
-        border-color: #198754;
-        background-color: #fff;
-        outline: none;
-        box-shadow: 0 0 0 4px rgba(25, 135, 84, 0.1);
-    }
+	@keyframes fadeInUp {
+		from {
+			opacity: 0;
+			transform: translateY(30px);
+		}
+		to {
+			opacity: 1;
+			transform: translateY(0);
+		}
+	}
 
-    /* 2. Label (Sarlavha) */
-    .custom-form-style label {
-        font-weight: 600;
-        color: #495057;
-        margin-top: 15px;
-        margin-bottom: 5px;
-        display: block;
-    }
+	.glass-card {
+		position: relative;
+	}
 
-    /* --- ENG MUHIM QISM: ORTIQCHA YOZUVLARNI YASHIRISH --- */
-    
-    /* Input tagidagi mayda yozuvlarni (helptext) yashiramiz */
-    .custom-form-style .helptext {
-        display: none !important;
-    }
-    
-    /* Parol qoidalari ro'yxatini (ul) yashiramiz */
-    .custom-form-style ul {
-        display: none !important;
-    }
-    
-    /* LEKIN xatoliklar (errorlist) ko'rinishi kerak, shuning uchun uni qayta yoqamiz */
-    .custom-form-style ul.errorlist {
-        display: block !important;
-        padding-left: 0;
-        margin-bottom: 10px;
-        list-style: none;
-    }
-    .custom-form-style ul.errorlist li {
-        color: #dc3545; /* Qizil rang */
-        font-size: 13px;
-        font-weight: bold;
-    }
+	.glass-card::before {
+		content: '';
+		position: absolute;
+		top: -2px;
+		left: -2px;
+		right: -2px;
+		bottom: -2px;
+		background: var(--success-gradient);
+		border-radius: 22px;
+		z-index: -1;
+		opacity: 0;
+		transition: opacity 0.3s ease;
+	}
+
+	.glass-card:hover::before {
+		opacity: 0.3;
+	}
 </style>
 {% endblock %}

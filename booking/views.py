@@ -15,7 +15,6 @@ from django.contrib.auth.models import User
 from .forms import DoctorUpdateForm, UserUpdateForm
 
 
-
 # --- MAXSUS TEKSHIRUV FUNKSIYASI ---
 # Bu funksiya userning "Superuser" (Admin) ekanligini tekshiradi
 def is_admin(user):
@@ -65,7 +64,6 @@ def home(request):
     return render(request, "booking/index.html", context)
 
 
-# --- YANGI QO'SHILGAN QISM ---
 @login_required
 def book_appointment(request, doctor_id):
     doctor = get_object_or_404(Doctor, id=doctor_id)
@@ -78,54 +76,16 @@ def book_appointment(request, doctor_id):
             appointment.doctor = doctor
 
             try:
-                # 1. Saqlashga urinamiz
                 appointment.save()
-
-                # 2. Agar o'xshasa, xabar berib Dashboardga yo'naltiramiz
-                messages.success(
-                    request, f"Tabriklaymiz! {doctor.last_name} qabuliga yozildingiz."
-                )
-                return redirect("dashboard")
-
-            except IntegrityError:
-                # 3. Agar band bo'lsa, xabar chiqaramiz
-                messages.error(
-                    request,
-                    "Uzr, bu vaqt allaqachon band qilingan! Iltimos, boshqa vaqtni tanlang.",
-                )
-                # MUHIM: Bu yerda redirect QILMAYMIZ va qayta SAVE qilmaymiz!
-                # Kod pastga tushib, formani xatolik xabari bilan qayta ko'rsatadi.
-
-    else:
-        form = AppointmentForm()
-
-    context = {"doctor": doctor, "form": form}
-    return render(request, "booking/booking_form.html", context)
-    doctor = get_object_or_404(Doctor, id=doctor_id)
-
-    if request.method == "POST":
-        form = AppointmentForm(request.POST)
-        if form.is_valid():
-            appointment = form.save(commit=False)
-            appointment.patient = (
-                request.user
-            )  # Kim kirgan bo'lsa, o'shani bemor deb olamiz
-            appointment.doctor = doctor
-            try:
-                appointment.save()
-                # Muvaffaqiyatli bo'lsa xabar beramiz
                 messages.success(
                     request, f"Tabriklaymiz! {doctor.last_name} qabuliga yozildingiz."
                 )
                 return redirect("dashboard")
             except IntegrityError:
-                # Agar band bo'lsa, xatolikni ushlaymiz va xabar beramiz
                 messages.error(
                     request,
                     "Uzr, bu vaqt allaqachon band qilingan! Iltimos, boshqa vaqtni tanlang.",
-                )  # URL dan kelgan shifokorni biriktiramiz
-            appointment.save()
-            return redirect("home")  # Muvaffaqiyatli bo'lsa, bosh sahifaga qaytadi
+                )
     else:
         form = AppointmentForm()
 

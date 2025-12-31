@@ -1,114 +1,347 @@
-{% extends 'base.html' %} {% block title %}Mening Qabullarim{% endblock %}
-{%block content %}
+{% extends 'base.html' %} {% block title %}Dashboard - Mening Qabullarim{%
+endblock %} {% block content %}
 <div class="container py-5">
-	<h2 class="mb-4">Mening Qabullarim</h2>
+	<!-- Page Header -->
+	<div class="text-center mb-5 fade-in-up">
+		<h2
+			class="display-5 fw-bold"
+			style="
+				background: var(--primary-gradient);
+				-webkit-background-clip: text;
+				-webkit-text-fill-color: transparent;
+			"
+		>
+			Mening Qabullarim
+		</h2>
+		<p class="text-white-50">
+			<i class="bi bi-person-circle"></i> {{ user.username }}
+		</p>
+	</div>
 
-	<div class="card shadow-sm">
-		<div class="card-body">
-			{% if appointments %}
-			<div class="table-responsive">
-				<table class="table table-hover">
-					<thead class="table-light">
-						<thead>
-							<tr>
-								<th>Sana</th>
-								<th>Vaqt</th>
-								<th>Shifokor</th>
-								<th>Mutaxassislik</th>
-								<th>Status</th>
-								<th>Amallar</th>
-							</tr>
-						</thead>
-					</thead>
-					<tbody>
-						{% for app in appointments %}
-						<tr>
-							<td>{{ app.date }}</td>
-							<td>{{ app.time }}</td>
-							<td>Dr. {{ app.doctor.last_name }}</td>
-							<td>{{ app.doctor.get_speciality_display }}</td>
+	<!-- Stats Cards -->
+	<div class="row g-4 mb-5 fade-in-up" style="animation-delay: 0.1s">
+		<div class="col-md-4">
+			<div class="stat-card stat-card-primary">
+				<div style="position: relative; z-index: 1">
+					<i class="bi bi-calendar-check fs-1 mb-3"></i>
+					<h3 class="fw-bold">{{ appointments|length }}</h3>
+					<p class="mb-0 opacity-75">Jami qabullar</p>
+				</div>
+			</div>
+		</div>
+		<div class="col-md-4">
+			<div class="stat-card stat-card-success">
+				<div style="position: relative; z-index: 1">
+					<i class="bi bi-check-circle fs-1 mb-3"></i>
+					<h3 class="fw-bold">
+						{% with completed_count=0 %} {% for app in appointments %} {% if
+						app.status == 'completed' %} {% with
+						completed_count=completed_count|add:1 %}{% endwith %} {% endif %} {%
+						endfor %} {{ appointments|length }} {% endwith %}
+					</h3>
+					<p class="mb-0 opacity-75">Yakunlangan</p>
+				</div>
+			</div>
+		</div>
+		<div class="col-md-4">
+			<div class="stat-card stat-card-warning">
+				<div style="position: relative; z-index: 1">
+					<i class="bi bi-clock-history fs-1 mb-3"></i>
+					<h3 class="fw-bold">
+						{% with pending_count=0 %} {% for app in appointments %} {% if
+						app.status == 'pending' %} {% with pending_count=pending_count|add:1
+						%}{% endwith %} {% endif %} {% endfor %} {{ appointments|length }}
+						{% endwith %}
+					</h3>
+					<p class="mb-0 opacity-75">Kutilmoqda</p>
+				</div>
+			</div>
+		</div>
+	</div>
 
-							<td>
-								{% if app.status == 'completed' %}
-								<span class="badge bg-success">Yakunlandi</span>
-								{% else %}
-								<span class="badge bg-secondary"
-									>{{ app.get_status_display }}</span
-								>
-								{% endif %}
-							</td>
-
-							<td>
-								{% if app.status == 'completed' %}
-								<button
-									type="button"
-									class="btn btn-info btn-sm text-white"
-									data-bs-toggle="modal"
-									data-bs-target="#viewResult{{ app.id }}"
-								>
-									<i class="bi bi-eye"></i> Retseptni ko'rish
-								</button>
-
+	<!-- Appointments Table -->
+	<div class="glass-card p-4 fade-in-up" style="animation-delay: 0.2s">
+		{% if appointments %}
+		<div class="table-responsive">
+			<table class="table table-hover align-middle">
+				<thead>
+					<tr style="border-bottom: 2px solid #dee2e6">
+						<th class="fw-bold text-dark">
+							<i class="bi bi-calendar3"></i> Sana
+						</th>
+						<th class="fw-bold text-dark"><i class="bi bi-clock"></i> Vaqt</th>
+						<th class="fw-bold text-dark">
+							<i class="bi bi-person-badge"></i> Shifokor
+						</th>
+						<th class="fw-bold text-dark">
+							<i class="bi bi-medical-bag"></i> Mutaxassislik
+						</th>
+						<th class="fw-bold text-dark text-center">
+							<i class="bi bi-info-circle"></i> Status
+						</th>
+						<th class="fw-bold text-dark text-center">
+							<i class="bi bi-gear"></i> Amallar
+						</th>
+					</tr>
+				</thead>
+				<tbody>
+					{% for app in appointments %}
+					<tr style="transition: all 0.3s ease">
+						<td class="fw-semibold">
+							<i class="bi bi-calendar-event text-primary"></i>
+							{{ app.date }}
+						</td>
+						<td>
+							<i class="bi bi-clock text-info"></i>
+							{{ app.time }}
+						</td>
+						<td>
+							<div class="d-flex align-items-center">
 								<div
-									class="modal fade"
-									id="viewResult{{ app.id }}"
-									tabindex="-1"
+									style="
+										width: 40px;
+										height: 40px;
+										background: var(--primary-gradient);
+										border-radius: 50%;
+										display: flex;
+										align-items: center;
+										justify-content: center;
+										margin-right: 10px;
+									"
 								>
-									<div class="modal-dialog">
-										<div class="modal-content">
-											<div class="modal-header bg-success text-white">
-												<h5 class="modal-title">🏥 Shifokor xulosasi</h5>
-												<button
-													type="button"
-													class="btn-close btn-close-white"
-													data-bs-dismiss="modal"
-												></button>
-											</div>
-											<div class="modal-body">
-												<h6 class="fw-bold text-dark">Tashxis:</h6>
-												<p class="p-3 bg-light rounded border">
-													{{ app.diagnosis|default:"Kiritilmagan" }}
-												</p>
+									<i class="bi bi-person text-white"></i>
+								</div>
+								<div>
+									<strong class="d-block"
+										>Dr. {{ app.doctor.last_name }}</strong
+									>
+									<small class="text-muted">{{ app.doctor.first_name }}</small>
+								</div>
+							</div>
+						</td>
+						<td>
+							<span
+								class="badge"
+								style="background: var(--info-gradient); padding: 8px 15px"
+							>
+								{{ app.doctor.get_speciality_display }}
+							</span>
+						</td>
+						<td class="text-center">
+							{% if app.status == 'completed' %}
+							<span class="badge badge-completed">
+								<i class="bi bi-check-circle"></i> Yakunlandi
+							</span>
+							{% elif app.status == 'pending' %}
+							<span class="badge badge-pending">
+								<i class="bi bi-hourglass-split"></i> Kutilmoqda
+							</span>
+							{% elif app.status == 'confirmed' %}
+							<span class="badge badge-confirmed">
+								<i class="bi bi-check2-all"></i> Tasdiqlangan
+							</span>
+							{% else %}
+							<span class="badge badge-cancelled">
+								<i class="bi bi-x-circle"></i> {{ app.get_status_display }}
+							</span>
+							{% endif %}
+						</td>
+						<td class="text-center">
+							{% if app.status == 'completed' %}
+							<button
+								type="button"
+								class="btn btn-gradient-primary btn-sm"
+								data-bs-toggle="modal"
+								data-bs-target="#viewResult{{ app.id }}"
+							>
+								<i class="bi bi-file-medical"></i> Natijani ko'rish
+							</button>
 
-												<h6 class="fw-bold text-dark mt-3">
+							<!-- Modal -->
+							<div class="modal fade" id="viewResult{{ app.id }}" tabindex="-1">
+								<div class="modal-dialog modal-dialog-centered modal-lg">
+									<div
+										class="modal-content"
+										style="border-radius: 20px; border: none"
+									>
+										<div
+											class="modal-header"
+											style="
+												background: var(--success-gradient);
+												color: white;
+												border-radius: 20px 20px 0 0;
+											"
+										>
+											<h5 class="modal-title fw-bold">
+												<i class="bi bi-clipboard2-pulse"></i> Tibbiy Natija
+											</h5>
+											<button
+												type="button"
+												class="btn-close btn-close-white"
+												data-bs-dismiss="modal"
+											></button>
+										</div>
+										<div class="modal-body p-4">
+											<div class="mb-4">
+												<h6 class="fw-bold text-dark mb-3">
+													<i class="bi bi-clipboard-check text-primary"></i>
+													Tashxis:
+												</h6>
+												<div
+													class="p-3 rounded-3"
+													style="
+														background: rgba(102, 126, 234, 0.1);
+														border-left: 4px solid #667eea;
+													"
+												>
+													<p class="mb-0 text-dark">
+														{{ app.diagnosis|default:"Kiritilmagan" }}
+													</p>
+												</div>
+											</div>
+
+											<div class="mb-4">
+												<h6 class="fw-bold text-dark mb-3">
+													<i class="bi bi-prescription2 text-success"></i>
 													Retsept va Tavsiyalar:
 												</h6>
-												<p
-													class="p-3 bg-light rounded border"
-													style="white-space: pre-line"
+												<div
+													class="p-3 rounded-3"
+													style="
+														background: rgba(17, 153, 142, 0.1);
+														border-left: 4px solid #11998e;
+													"
 												>
-													{{ app.prescription|default:"Kiritilmagan" }}
-												</p>
-
-												<hr />
-												<small class="text-muted"
-													>Dr. {{ app.doctor.first_name }} {{
-													app.doctor.last_name }} | {{ app.date }}</small
-												>
+													<p
+														class="mb-0 text-dark"
+														style="white-space: pre-line"
+													>
+														{{ app.prescription|default:"Kiritilmagan" }}
+													</p>
+												</div>
 											</div>
+
+											<hr style="border-top: 2px dashed #dee2e6" />
+
+											<div class="d-flex align-items-center text-muted">
+												<i class="bi bi-person-badge fs-4 me-2"></i>
+												<div>
+													<strong class="text-dark"
+														>Dr. {{ app.doctor.first_name }} {{
+														app.doctor.last_name }}</strong
+													>
+													<small class="d-block"
+														>{{ app.date }} | {{ app.time }}</small
+													>
+												</div>
+											</div>
+										</div>
+										<div class="modal-footer" style="border-top: none">
+											<button
+												type="button"
+												class="btn btn-outline-secondary"
+												data-bs-dismiss="modal"
+											>
+												<i class="bi bi-x-lg"></i> Yopish
+											</button>
+											<button type="button" class="btn btn-gradient-primary">
+												<i class="bi bi-printer"></i> Chop etish
+											</button>
 										</div>
 									</div>
 								</div>
+							</div>
 
-								{% elif app.status == 'pending' %}
-								<form action="..." ...>
-									<button ...><i class="bi bi-trash"></i></button>
-								</form>
-								{% endif %}
-							</td>
-						</tr>
-						{% endfor %}
-					</tbody>
-				</table>
-			</div>
-			{% else %}
-			<div class="text-center py-4">
-				<p class="text-muted">Sizda hali hech qanday qabul yo'q.</p>
-				<a href="{% url 'home' %}" class="btn btn-primary">Shifokor tanlash</a>
-			</div>
-			{% endif %}
+							{% elif app.status == 'pending' %}
+							<button class="btn btn-outline-danger btn-sm" disabled>
+								<i class="bi bi-trash"></i> Bekor qilish
+							</button>
+							{% else %}
+							<span class="text-muted">—</span>
+							{% endif %}
+						</td>
+					</tr>
+					{% endfor %}
+				</tbody>
+			</table>
 		</div>
+		{% else %}
+		<!-- Empty State -->
+		<div class="text-center py-5">
+			<div
+				style="
+					width: 100px;
+					height: 100px;
+					background: rgba(102, 126, 234, 0.1);
+					border-radius: 50%;
+					display: flex;
+					align-items: center;
+					justify-content: center;
+					margin: 0 auto 20px;
+				"
+			>
+				<i class="bi bi-calendar-x text-primary" style="font-size: 3rem"></i>
+			</div>
+			<h4 class="text-dark mb-3">Hali qabullar yo'q</h4>
+			<p class="text-muted mb-4">
+				Siz hali hech qanday qabulga yozilmagan. Shifokor tanlang va qabulga
+				yoziling!
+			</p>
+			<a href="{% url 'home' %}" class="btn btn-gradient-primary btn-lg">
+				<i class="bi bi-search"></i> Shifokor tanlash
+			</a>
+		</div>
+		{% endif %}
 	</div>
 </div>
 
+<style>
+	.fade-in-up {
+		animation: fadeInUp 0.6s ease-out both;
+	}
+
+	@keyframes fadeInUp {
+		from {
+			opacity: 0;
+			transform: translateY(30px);
+		}
+		to {
+			opacity: 1;
+			transform: translateY(0);
+		}
+	}
+
+	.table tbody tr:hover {
+		background: rgba(102, 126, 234, 0.05);
+		transform: scale(1.01);
+		box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+	}
+
+	.badge {
+		padding: 8px 16px;
+		border-radius: 50px;
+		font-weight: 600;
+		font-size: 0.85rem;
+	}
+
+	.badge-pending {
+		background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+		color: white;
+	}
+
+	.badge-confirmed {
+		background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+		color: white;
+	}
+
+	.badge-cancelled {
+		background: linear-gradient(135deg, #eb3349 0%, #f45c43 100%);
+		color: white;
+	}
+
+	.badge-completed {
+		background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+		color: white;
+	}
+</style>
 {% endblock %}
