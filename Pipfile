@@ -7,6 +7,9 @@ name = "pypi"
 django = "==5"
 python-dotenv = "*"
 pillow = "*"
+channels = "*"
+channels-redis = "*"
+daphne = "*"
 
 [dev-packages]
 

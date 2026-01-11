@@ -1,0 +1,195 @@
+{% extends 'base.html' %} {% block title %}Chat Xonasi{% endblock %} 
+{% block content %}
+<div class="container mt-5">
+	<div class="row">
+		<div class="col-md-8 offset-md-2">
+			<div class="card">
+				<div class="card-header bg-primary text-white">
+					<h3 class="mb-0">💬 Chat Xonasi</h3>
+					<small
+						>{% if user.is_authenticated %}{{ user.username }} sifatida{%else%}Mehmon{% endif %}</small
+					>
+				</div>
+				<div class="card-body">
+					<div
+						id="chat-messages"
+						style="
+							height: 450px;
+							overflow-y: scroll;
+							background-color: #f8f9fa;
+							border: 1px solid #ddd;
+							padding: 15px;
+							margin-bottom: 15px;
+							border-radius: 5px;
+						"
+					>
+						<!-- Xabarlar shu yerda ko'rinadi -->
+					</div>
+					<div
+						id="typing-indicator"
+						style="
+							display: none;
+							color: #999;
+							font-style: italic;
+							margin-bottom: 10px;
+						"
+					>
+						<span id="typing-text"></span>
+					</div>
+					<div class="input-group">
+						<input
+							type="text"
+							id="chat-message-input"
+							class="form-control"
+							placeholder="Xabar yozing..."
+							{%
+							if
+							not
+							user.is_authenticated
+							%}disabled{%
+							endif
+							%}
+						/>
+						<button
+							id="chat-message-submit"
+							class="btn btn-primary"
+							{%
+							if
+							not
+							user.is_authenticated
+							%}disabled{%
+							endif
+							%}
+						>
+							Yuborish
+						</button>
+					</div>
+					{% if not user.is_authenticated %}
+					<div class="alert alert-warning mt-3 mb-0">
+						Chat'dan foydalanish uchun
+						<a href="{% url 'login' %}" class="alert-link">tizimga kiring</a>
+					</div>
+					{% endif %}
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script>
+	const username =
+		'{% if user.is_authenticated %}{{ user.username }}{% else %}Mehmon{% endif %}'
+	const chatSocket = new WebSocket('ws://' + window.location.host + '/ws/chat/')
+	let typingTimeout = null
+	const typingUsers = new Set()
+
+	chatSocket.onmessage = function (e) {
+		const data = JSON.parse(e.data)
+		const messagesDiv = document.querySelector('#chat-messages')
+
+		if (data.typing) {
+			// Typing indicator
+			typingUsers.add(data.username)
+			clearTimeout(typingTimeout)
+			updateTypingIndicator()
+
+			typingTimeout = setTimeout(() => {
+				typingUsers.delete(data.username)
+				updateTypingIndicator()
+			}, 1500)
+		} else {
+			// Chat xabari
+			typingUsers.delete(data.username)
+			updateTypingIndicator()
+
+			const messageElement = document.createElement('div')
+			messageElement.className = 'mb-3 p-2 border-bottom'
+
+			const isOwnMessage = data.username === username
+			const alignClass = isOwnMessage ? 'text-end' : 'text-start'
+			const bgClass = isOwnMessage ? 'bg-primary text-white' : 'bg-light'
+
+			messageElement.innerHTML = `
+				<div class="${alignClass}">
+					<div class="d-inline-block ${bgClass} rounded px-3 py-2" style="max-width: 70%;">
+						<strong>${data.username}</strong>
+						<p class="mb-0">${data.message}</p>
+						<small class="text-muted" style="font-size: 0.75rem;">${data.timestamp}</small>
+					</div>
+				</div>
+			`
+			messagesDiv.appendChild(messageElement)
+			messagesDiv.scrollTop = messagesDiv.scrollHeight
+		}
+	}
+
+	function updateTypingIndicator() {
+		const typingIndicator = document.querySelector('#typing-indicator')
+		const typingText = document.querySelector('#typing-text')
+
+		if (typingUsers.size > 0) {
+			const users = Array.from(typingUsers).join(', ')
+			typingText.textContent = `${users} yozmoqda...`
+			typingIndicator.style.display = 'block'
+		} else {
+			typingIndicator.style.display = 'none'
+		}
+	}
+
+	chatSocket.onclose = function (e) {
+		console.error('Chat socket yopildi')
+		const messagesDiv = document.querySelector('#chat-messages')
+		const errorElement = document.createElement('div')
+		errorElement.className = 'alert alert-danger'
+		errorElement.textContent = 'Aloqa uzildi. Sahifani yangilang.'
+		messagesDiv.appendChild(errorElement)
+	}
+
+	let typingEventTimeout = null
+
+	document
+		.querySelector('#chat-message-input')
+		.addEventListener('input', function () {
+			clearTimeout(typingEventTimeout)
+
+			// Typing event yuborish
+			chatSocket.send(
+				JSON.stringify({
+					username: username,
+					typing: true,
+				})
+			)
+
+			// 2 sekund boshqa typing event yubormasa, stop
+			typingEventTimeout = setTimeout(() => {
+				// Typing tugadi
+			}, 2000)
+		})
+
+	document.querySelector('#chat-message-input').focus()
+	document.querySelector('#chat-message-input').onkeyup = function (e) {
+		if (e.keyCode === 13) {
+			document.querySelector('#chat-message-submit').click()
+		}
+	}
+
+	document.querySelector('#chat-message-submit').onclick = function (e) {
+		const messageInputDom = document.querySelector('#chat-message-input')
+		const message = messageInputDom.value.trim()
+
+		if (message === '') {
+			return
+		}
+
+		chatSocket.send(
+			JSON.stringify({
+				message: message,
+				username: username,
+			})
+		)
+		messageInputDom.value = ''
+		typingUsers.delete(username)
+		updateTypingIndicator()
+	}
+</script>
+{% endblock %}
